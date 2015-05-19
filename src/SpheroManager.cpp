@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <QDebug>
 
 #include "bluetooth/bluez_adaptor.h"
 #include <Sphero.hpp>
@@ -19,13 +20,14 @@ using namespace std;
 
 //--------------------------------------------------------- Local includes
 #include "SpheroManager.h"
+#include "CommandHandler.h"
 
 
 //------------------------------------------------ Constructors/Destructor
 /**
  * @brief SpheroManager : Constructor
  */
-SpheroManager::SpheroManager(MainWindow *win):s(NULL), nbActif(0), _appWin(win)
+SpheroManager::SpheroManager(CommandHandler *ch):s(NULL), nbActif(0), _ch(ch)
 {}
 
 SpheroManager::~SpheroManager()
@@ -75,7 +77,7 @@ bool SpheroManager::connectSphero(string address)
 
 		else
 		{
-			_appWin->setStatus("Unable to retrieve an address");
+			_ch->setStatusBar("Unable to retrieve an address");
 			return false;
 		}
 	}
@@ -102,7 +104,7 @@ bool SpheroManager::connectSphero(string address)
 
 	if(sph->connect())
 	{
-		_appWin->setStatus("Sphero connected successfully");
+		_ch->setStatusBar("Sphero connected successfully");
 		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
 		spheroNames.push_back("Sphero"+idx);
@@ -120,7 +122,7 @@ bool SpheroManager::connectSphero(string address)
 	}
 	else
 	{
-		_appWin->setStatus("Connection error");
+		_ch->setStatusBar("Connection error");
 		delete sph;
 	}
 	return true;
@@ -158,7 +160,7 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 			s = NULL;
 		}
 		spheroVec[spheroIndex]->onDisconnect([this](){
-			_appWin->setStatus("Sphero disconnected");
+			_ch->setStatusBar("Sphero disconnected");
 		});
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];

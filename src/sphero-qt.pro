@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
 		mainwindow.cpp \
 	CommandHandler.cpp \
-	SpheroManager.cpp
+	SpheroManager.cpp \
+	HistoryLineEdit.cpp
 
 HEADERS  += mainwindow.h \
 	CommandHandler.h \
-	SpheroManager.h
+	SpheroManager.h \
+	HistoryLineEdit.h
 
 INCLUDEPATH += ../lib
 
@@ -27,7 +29,6 @@ FORMS    += mainwindow.ui
 
 CONFIG   += c++11
 
-LIBS += -lpthread
 unix:!macx: LIBS += -L$$PWD/../lib/ -lsphero
 
 INCLUDEPATH += $$PWD/../

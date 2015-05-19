@@ -17,16 +17,23 @@ class SpheroManager;
 
 class CommandHandler : public QThread
 {
+		Q_OBJECT
+
 	public:
 		CommandHandler(MainWindow* win);
 
 		virtual ~CommandHandler();
 
 
-
 		bool setParameter(string &str);
 
-		void start();
+		void run() Q_DECL_OVERRIDE;
+
+		void setStatusBar(string string);
+
+	signals:
+
+		void requestStatusBarUpdate(QString);
 
 	private:
 		MainWindow* _appWin;
@@ -37,6 +44,7 @@ class CommandHandler : public QThread
 		stringstream *_cmdStream;
 
 	protected:
+
 
 		/**
 		 * @brief handleCommand : handles a command for sphero

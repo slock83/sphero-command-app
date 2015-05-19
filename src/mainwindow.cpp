@@ -1,7 +1,7 @@
 
-#include <pthread.h>
 #include <QString>
 #include <QThread>
+#include <QTimer>
 
 #include <string>
 #include <sstream>
@@ -18,6 +18,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	_ch = new CommandHandler(this);
+
+	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)), Qt::QueuedConnection);
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
+	timer->start(1000);
+
 }
 
 MainWindow::~MainWindow()
@@ -26,9 +32,9 @@ MainWindow::~MainWindow()
 	delete _ch;
 }
 
-void MainWindow::setStatus(const string& status, int timeout)
+void MainWindow::setStatus(QString status)
 {
-	this->statusBar()->showMessage(QString::fromStdString(status), timeout);
+	_status = status;
 }
 
 
@@ -43,12 +49,19 @@ void MainWindow::on_commandLine_3_returnPressed()
 	commandAction();
 }
 
+void MainWindow::updateStatus()
+{
+	ui->statusBar->showMessage(_status);
+	update();
+}
+
 void MainWindow::commandAction()
 {
 	string cmdLine = ui->commandLine_3->text().toStdString();
+	ui->commandLine_3->setText("");
 
 	if(_ch->setParameter(cmdLine))
 		_ch->start();
 	else
-		setStatus("A command is already running, please retry", 2);
+		emit setStatus("A command is already running, please retry");
 }

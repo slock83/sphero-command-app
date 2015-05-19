@@ -46,7 +46,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="commandLine_3">
+         <widget class="HistoryLineEdit" name="commandLine_3">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -288,6 +288,13 @@ QMenuBar::item::selected {
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>HistoryLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>HistoryLineEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

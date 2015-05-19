@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <pthread.h>
 #include <string>
 
 using namespace std;
@@ -22,17 +21,21 @@ class MainWindow : public QMainWindow
 		explicit MainWindow(QWidget *parent = 0);
 		~MainWindow();
 
-		void setStatus(const string& status, int timeout = 0);
 
 	private slots:
 		void on_sendBtn_3_clicked();
 
 		void on_commandLine_3_returnPressed();
 
+		void updateStatus();
+
+	public slots:
+		void setStatus(QString status);
+
 	private:
 		Ui::MainWindow *ui;
+		QString _status;
 
-		pthread_t _monitor;
 		CommandHandler *_ch;
 
 		void commandAction();

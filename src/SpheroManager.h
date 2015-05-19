@@ -14,7 +14,8 @@
 
 using namespace std;
 
-#include "mainwindow.h"
+class CommandHandler;
+#include "CommandHandler.h"
 
 //------------------------------------------------------- Class definition
 class SpheroManager
@@ -27,7 +28,7 @@ class SpheroManager
 
 		//--------------------------------------- Constructors/Destructor
 
-		SpheroManager(MainWindow *win);
+		SpheroManager(CommandHandler *ch);
 
 		SpheroManager(const SpheroManager& sphMan) = delete;
 
@@ -89,7 +90,7 @@ class SpheroManager
 		vector<Sphero*> spheroVec;
 		vector<string> spheroNames;
 
-		MainWindow *_appWin;
+		CommandHandler *_ch;
 };
 
 #endif // SPHEROMANAGER_H

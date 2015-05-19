@@ -1,6 +1,7 @@
 
 #include <string>
 #include <sstream>
+#include <QDebug>
 
 using namespace std;
 
@@ -10,7 +11,7 @@ using namespace std;
 
 CommandHandler::CommandHandler(MainWindow *win): QThread(), _appWin(win), _cmdStream(NULL)
 {
-	_sm = new SpheroManager(win);
+	_sm = new SpheroManager(this);
 }
 
 CommandHandler::~CommandHandler()
@@ -36,15 +37,19 @@ bool CommandHandler::setParameter(string &str)
 	return false;
 }
 
-void CommandHandler::start()
+void CommandHandler::run()
 {
 	_cmdLock.lock();
 
 	string cmd;
 	*_cmdStream >> cmd;
 	handleCommand(cmd, *_cmdStream);
-
 	_cmdLock.unlock();
+}
+
+void CommandHandler::setStatusBar(string string)
+{
+	emit requestStatusBarUpdate(QString::fromStdString(string));
 }
 
 
@@ -148,7 +153,9 @@ void CommandHandler::handleConnect(stringstream &css)
 	else
 		ss << "Trying to connect to Sphero at address " << address;
 
-	_appWin->setStatus(ss.str());
+	setStatusBar(ss.str());
+	//_appWin->setStatus(ss.str());
+
 	_sm->connectSphero(address);
 }
 
@@ -159,7 +166,8 @@ void CommandHandler::handleDisconnect(stringstream &css)
 
 	stringstream ss("Disconnecting Sphero number ");
 	ss << index;
-	_appWin->setStatus(ss.str());
+
+	setStatusBar(ss.str());
 	_sm->disconnectSphero(index);
 }
 
