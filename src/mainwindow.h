@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow
 		pthread_t _monitor;
 		CommandHandler *_ch;
 
-		static void* commandAction(void *win);
+		void commandAction();
 };
 
 #endif // MAINWINDOW_H

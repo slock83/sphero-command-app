@@ -1,8 +1,14 @@
 
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+
 #include "CommandHandler.h"
 #include "SpheroManager.h"
 
-CommandHandler::CommandHandler(MainWindow *win): _appWin(win)
+CommandHandler::CommandHandler(MainWindow *win): QThread(), _appWin(win), _cmdStream(NULL)
 {
 	_sm = new SpheroManager(win);
 }
@@ -12,10 +18,38 @@ CommandHandler::~CommandHandler()
 	delete _sm;
 }
 
+bool CommandHandler::setParameter(string &str)
+{
+	if(_cmdStream != NULL)
+	{
+		delete _cmdStream;
+		_cmdStream = NULL;
+	}
+
+	if(_cmdLock.tryLock(1))
+	{
+		_cmdStream = new stringstream("");
+		*_cmdStream << str;
+		_cmdLock.unlock();
+		return true;
+	}
+	return false;
+}
+
+void CommandHandler::start()
+{
+	_cmdLock.lock();
+
+	string cmd;
+	*_cmdStream >> cmd;
+	handleCommand(cmd, *_cmdStream);
+
+	_cmdLock.unlock();
+}
+
 
 void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 {
-
 	transform(command.begin(), command.end(), command.begin(), ::tolower);
 
 	//------------------------------ SpheroManager related
@@ -102,13 +136,17 @@ void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 	//return -1;
 }
 
+
 void CommandHandler::handleConnect(stringstream &css)
 {
 	string address;
 	css >> address;
 
-	stringstream ss("Trying to connect to Sphero at address ");
-	ss << address;
+	stringstream ss("");
+	if(address == "")
+		ss << "Trying to connect to last saved Sphero address";
+	else
+		ss << "Trying to connect to Sphero at address " << address;
 
 	_appWin->setStatus(ss.str());
 	_sm->connectSphero(address);

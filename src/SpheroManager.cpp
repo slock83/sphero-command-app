@@ -75,15 +75,12 @@ bool SpheroManager::connectSphero(string address)
 
 		else
 		{
-			_appWin->setStatus("Unable to retrieve an address", 5);
+			_appWin->setStatus("Unable to retrieve an address");
 			return false;
 		}
 	}
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
-	sph->onConnect([this](){
-		_appWin->setStatus("Sphero connected successfully");
-	});
 
 	sph->onCollision([sph](CollisionStruct* infos){
 		uint8_t red 	= (rand() + infos->timestamp) % 256;
@@ -105,6 +102,7 @@ bool SpheroManager::connectSphero(string address)
 
 	if(sph->connect())
 	{
+		_appWin->setStatus("Sphero connected successfully");
 		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
 		spheroNames.push_back("Sphero"+idx);
@@ -115,15 +113,15 @@ bool SpheroManager::connectSphero(string address)
 		{
 			myfile <<address;
 			myfile.close();
-			cout << "Sphero address saved ! next time, just type \"connect\" :)"<< endl;
+			cerr << "Sphero address saved ! next time, just type \"connect\" :)"<< endl;
 		}
-		else cout << "Error : can't save the address :("<< endl;
+		else cerr << "Error : can't save the address :("<< endl;
 
 	}
 	else
 	{
+		_appWin->setStatus("Connection error");
 		delete sph;
-		cout << "Connection error" << endl;
 	}
 	return true;
 }
@@ -160,7 +158,7 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 			s = NULL;
 		}
 		spheroVec[spheroIndex]->onDisconnect([this](){
-			_appWin->setStatus("Sphero disconnected", 5);
+			_appWin->setStatus("Sphero disconnected");
 		});
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];

@@ -1,6 +1,9 @@
 #ifndef COMMANDHANDLER_H
 #define COMMANDHANDLER_H
 
+#include <QThread>
+#include <QMutex>
+
 #include <string>
 #include <sstream>
 
@@ -12,13 +15,28 @@ class SpheroManager;
 #include "SpheroManager.h"
 #include "mainwindow.h"
 
-class CommandHandler
+class CommandHandler : public QThread
 {
 	public:
 		CommandHandler(MainWindow* win);
 
 		virtual ~CommandHandler();
 
+
+
+		bool setParameter(string &str);
+
+		void start();
+
+	private:
+		MainWindow* _appWin;
+		SpheroManager* _sm;
+
+		QMutex _cmdLock;
+
+		stringstream *_cmdStream;
+
+	protected:
 
 		/**
 		 * @brief handleCommand : handles a command for sphero
@@ -27,11 +45,6 @@ class CommandHandler
 		 */
 		void handleCommand(string& command, stringstream& cmdStream);
 
-	private:
-		MainWindow* _appWin;
-		SpheroManager* _sm;
-
-	protected:
 
 		void handleConnect(stringstream& css);
 		void handleDisconnect(stringstream& css);

@@ -1,6 +1,7 @@
 
 #include <pthread.h>
 #include <QString>
+#include <QThread>
 
 #include <string>
 #include <sstream>
@@ -34,25 +35,20 @@ void MainWindow::setStatus(const string& status, int timeout)
 
 void MainWindow::on_sendBtn_3_clicked()
 {
-	pthread_create(&_monitor, NULL, commandAction, this);
+	commandAction();
 }
 
 void MainWindow::on_commandLine_3_returnPressed()
 {
-	pthread_create(&_monitor, NULL, commandAction, this);
+	commandAction();
 }
 
-void* MainWindow::commandAction(void *win)
+void MainWindow::commandAction()
 {
-	MainWindow* window = (MainWindow*) win;
+	string cmdLine = ui->commandLine_3->text().toStdString();
 
-	string cmdLine = window->ui->commandLine_3->text().toStdString();
-	stringstream ss(cmdLine);
-
-	string cmd;
-	ss >> cmd;
-
-	window->_ch->handleCommand(cmd, ss);
-
-	return NULL;
+	if(_ch->setParameter(cmdLine))
+		_ch->start();
+	else
+		setStatus("A command is already running, please retry", 2);
 }
