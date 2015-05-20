@@ -227,6 +227,7 @@ QMenuBar::item::selected {
      <string>Sphero</string>
     </property>
     <addaction name="actionConnect"/>
+    <addaction name="actionConnect_2"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -243,7 +244,7 @@ QMenuBar::item::selected {
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionConnect">
    <property name="text">
-    <string>Connect</string>
+    <string>Connect last</string>
    </property>
   </action>
   <action name="actionExit">
@@ -259,6 +260,11 @@ QMenuBar::item::selected {
   <action name="actionManual">
    <property name="text">
     <string>Manual</string>
+   </property>
+  </action>
+  <action name="actionConnect_2">
+   <property name="text">
+    <string>Connect ...</string>
    </property>
   </action>
  </widget>

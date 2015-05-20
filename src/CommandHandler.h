@@ -62,6 +62,7 @@ class CommandHandler : public QThread
 		void requestStatusBarUpdate(QString);
 
 	private:
+
 		MainWindow* _appWin;
 		SpheroManager* _sm;
 
@@ -69,6 +70,8 @@ class CommandHandler : public QThread
 		QMutex _listUpdateLock;
 
 		stringstream *_cmdStream;
+
+        void isConnected();
 
 	protected:
 
