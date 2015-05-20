@@ -134,17 +134,14 @@ bool SpheroManager::connectSphero(string address, string name)
  * @brief selectSphero : Selects a Sphero to command
  * @param spheroIndex : The index of the Sphero to activate in the list
  */
-void SpheroManager::selectSphero(unsigned int spheroIndex)
+bool SpheroManager::selectSphero(unsigned int spheroIndex)
 {
 	if(nbActif > spheroIndex)
 	{
-		cout << "Active Sphero : "<< spheroIndex << endl;
 		s = spheroVec[spheroIndex];
-	}
-	else
-	{
-		cout << "Error : invalid index" << endl;
-	}
+        return true;
+    }
+    return false;
 }
 
 
