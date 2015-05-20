@@ -127,12 +127,6 @@ class CommandHandler : public QThread
 		void handleCollision(stringstream& css);
 
 		/**
-		 * @brief handleColl simulate a collision
-		 * @param css empty
-		 */
-		void handleColl(stringstream& css);
-
-		/**
 		 * @brief handleRoll sends a roll command to the active sphero
 		 * @param css contains 0..255 (speed) 0..359 (angle)
 		 */
@@ -145,29 +139,11 @@ class CommandHandler : public QThread
 		void handleHead(stringstream& css);
 
 		/**
-		 * @brief handlePing sends a ping to the active sphero
-		 * @param css empty
-		 */
-		void handlePing(stringstream& css);
-
-
-		/**
-		 * @brief handleSleep sends the active sphero to sleep.
-		 * @param css contains the duration (in second) to sleep. /!\ might change
-		 */
-		void handleSleep(stringstream& css);
-
-		/**
 		 * @brief handleInactivityTO change the inactivity timeout of the current sphero
 		 * @param css contains the new timeout (in second)
 		 */
 		void handleInactivityTO(stringstream& css);
 
-		/**
-		 * @brief handleReset resets the active sphero's locator
-		 * @param css empty
-		 */
-		void handleReset(stringstream& css);
 };
 
 #endif // COMMANDHANDLER_H

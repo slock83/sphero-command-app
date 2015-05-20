@@ -83,8 +83,7 @@ SpheroManager *CommandHandler::getManager()
 
 bool CommandHandler::isConnected()
 {
-
-	if(_sm->getSphero() == NULL)
+	if(_sm->getSphero() == NULL || !_sm->getSphero()->isConnected())
 	{
 		stringstream ss("");
 		ss << "Error : sphero not connected !";
@@ -124,63 +123,41 @@ void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 	else
 	{
 		if(!isConnected())
-			setStatusBar("Please connect first");
-		if(command == "coll")
 		{
-			/*	if(isConnected()) {
-			CollisionStruct coll;
-			sm.getSphero()->reportCollision(&coll);
-		}*/
+			setStatusBar("Please connect first");
+			return;
 		}
-		//------------------------------ Others
-		else if(command == "changecolor")
+
+		if(command == "changecolor")
 		{
 			handleChangeColor(cmdStream);
 		}
 		else if(command == "backled")
 		{
-			//	handleBackLED(css);
+			handleBackled(cmdStream);
 		}
 		else if(command == "roll")
 		{
-			//	handleRoll(css);
+			handleRoll(cmdStream);
 		}
 		else if(command == "head")
 		{
-			//	handleHead(css);
+			handleHead(cmdStream);
 		}
 		else if(command == "collision")
 		{
-			//	handleCollision();
-		}
-		else if(command == "ping")
-		{
-			//	ping();
+			handleCollision(cmdStream);
 		}
 		else if(command == "setit")
 		{
-			//	handleIT(css);
-		}
-		else if(command == "read")
-		{
-			/*	if(!isConnected()) cout << "please connect first" <<endl;
-
-		else sm.getSphero()->setDataStreaming(1, 1, 0, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y);*/
+			handleInactivityTO(cmdStream);
 		}
 		else if(command == "reset")
 		{
-			/*	if(!isConnected()) cout << "please connect first" <<endl;
-
-		else sm.getSphero()->configureLocator(0, 0, 0, 0);*/
-		}
-		else
-		{
-
+			setStatusBar("Reseting locator");
+			_sm.getSphero()->configureLocator(0, 0, 0, 0);
 		}
 	}
-	//	showHelp();
-
-	//return -1;
 }
 
 
@@ -283,8 +260,42 @@ void CommandHandler::handleCollision(stringstream &css)
 	{
 		int Xt, Xspd, Yt, Yspd, dead;
 		css >> Xt >> Xspd >> Yt >> Yspd >> dead;
+		setStatusBar("Collisions enabled");
 		_sm->getSphero()->enableCollisionDetection(Xt, Xspd, Yt, Yspd, dead);
 	}
 	else
+	{
+		setStatusBar("Collisions disabled");
 		_sm->getSphero()->disableCollisionDetection();
+	}
+}
+
+void CommandHandler::handleRoll(stringstream &css)
+{
+	int speed, angle;
+	css >> speed >> angle;
+
+	stringstream ss("");
+	ss << "Rolling at " << angle%360 << "° at speed " << speed;
+	setStatusBar(ss.str());
+	_sm->getSphero()->roll(speed, angle);
+}
+
+void CommandHandler::handleHead(stringstream &css)
+{
+	int angle;
+	css >> angle;
+	_sm->getSphero()->setHeading(angle);
+}
+
+void CommandHandler::handleInactivityTO(stringstream &css)
+{
+	int to;
+	css >> to;
+
+	stringstream ss("");
+	ss << "Changing inactivity timeout time to " << to << "s";
+	setStatusBar(ss.str());
+
+	_sm->getSphero()->setInactivityTimeout(to);
 }
