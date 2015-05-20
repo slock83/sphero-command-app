@@ -31,7 +31,6 @@ void HistoryLineEdit::enter_pressed()
 {
 	lines << text();
 	current_line = lines.size();
-	//setText("");
 	emit lineExecuted(lines.back());
 }
 

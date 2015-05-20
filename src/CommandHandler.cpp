@@ -57,6 +57,15 @@ SpheroManager *CommandHandler::getManager()
 	return _sm;
 }
 
+bool CommandHandler::lockListUpdate(bool state)
+{
+	if(state)
+		return _listUpdateLock.tryLock(100);
+	else
+		_listUpdateLock.unlock();
+	return true;
+}
+
 
 void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 {
@@ -161,7 +170,12 @@ void CommandHandler::handleConnect(stringstream &css)
 	setStatusBar(ss.str());
 	//_appWin->setStatus(ss.str());
 
-	_sm->connectSphero(address, address);
+	lockListUpdate(true);
+	if(address == "")
+		_sm->connectSphero(address, "Sphero");
+	else
+		_sm->connectSphero(address, address);
+	lockListUpdate(false);
 }
 
 void CommandHandler::handleDisconnect(stringstream &css)
@@ -180,6 +194,9 @@ void CommandHandler::handleDisconnect(stringstream &css)
 	ss << "Disconnecting Sphero number " << index;
 
 	setStatusBar(ss.str());
+
+	lockListUpdate(true);
 	_sm->disconnectSphero(index);
+	lockListUpdate(false);
 }
 

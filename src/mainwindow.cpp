@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QFont>
 
+#include <QDebug>
+
 #include <string>
 #include <sstream>
 
@@ -35,28 +37,36 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateList()
 {
-	vector<string> names = _ch->getManager()->listSpheros();
-	string selected = ui->spheroLst->currentItem()->text().toStdString();
-	int newIndex = _ch->getManager()->getSpheroIndex(selected);
-	int sel = _ch->getManager()->getSelectedIndex();
-
-	ui->spheroLst->clear();
-	for(string name : names)
+	if(_ch->lockListUpdate(true))
 	{
-		ui->spheroLst->addItem(QString::fromStdString(name));
+		vector<string> *names = _ch->getManager()->listSpheros();
+		QListWidgetItem *cwi = ui->spheroLst->currentItem();
+
+		string selected = (cwi == NULL) ? "" : cwi->text().toStdString();
+		int newIndex = _ch->getManager()->getSpheroIndex(selected);
+		int sel = _ch->getManager()->getSelectedIndex();
+		_ch->lockListUpdate(false);
+
+		ui->spheroLst->clear();
+		for(string name : *names)
+		{
+			qDebug() << QString::fromStdString(name);
+			ui->spheroLst->addItem(QString::fromStdString(name));
+		}
+
+		ui->spheroLst->item(newIndex)->setSelected(true);
+		QListWidgetItem *wi = ui->spheroLst->item(sel);
+		QFont font = wi->font();
+		font.setBold(true);
+
+		wi->setFont(font);
 	}
-
-	ui->spheroLst->item(newIndex)->setSelected(true);
-	QListWidgetItem *wi = ui->spheroLst->item(sel);
-	QFont font = wi->font();
-	font.setBold(true);
-
-	wi->setFont(font);
 }
 
 void MainWindow::setStatus(QString status)
 {
 	_status = status;
+	updateList();
 }
 
 
@@ -74,7 +84,6 @@ void MainWindow::on_commandLine_3_returnPressed()
 void MainWindow::updateStatus()
 {
 	ui->statusBar->showMessage(_status);
-	//update();
 }
 
 void MainWindow::commandAction()
@@ -86,6 +95,4 @@ void MainWindow::commandAction()
 		_ch->start();
 	else
 		emit setStatus("A command is already running, please retry");
-
-	updateList();
 }

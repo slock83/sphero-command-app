@@ -28,7 +28,9 @@ using namespace std;
  * @brief SpheroManager : Constructor
  */
 SpheroManager::SpheroManager(CommandHandler *ch):s(NULL), nbActif(0), _ch(ch)
-{}
+{
+	spheroNames = new vector<string>();
+}
 
 SpheroManager::~SpheroManager()
 {}
@@ -39,7 +41,7 @@ SpheroManager::~SpheroManager()
 /**
  * @brief listSpheros : Lists the currently connected Spheros
  */
-vector<string> SpheroManager::listSpheros()
+vector<string>* SpheroManager::listSpheros()
 {
 	return spheroNames;
 }
@@ -108,7 +110,7 @@ bool SpheroManager::connectSphero(string address, string name)
 		_ch->setStatusBar("Sphero connected successfully");
 		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
-		spheroNames.push_back(name);
+		spheroNames->push_back(name);
 
 		s = sph;
 		ofstream myfile ("lastConnection", ios::out | ios::trunc);
@@ -169,7 +171,7 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 		//cout << "Sphero : " << spheroNames[spheroIndex] << " has been removed." << endl;
 		nbActif--;
 		spheroVec.erase(spheroVec.begin() + spheroIndex);
-		spheroNames.erase(spheroNames.begin() + spheroIndex);
+		spheroNames->erase(spheroNames->begin() + spheroIndex);
 	}
 	else
 	{
@@ -192,7 +194,7 @@ Sphero* SpheroManager::getSphero()
  * @brief getSpheroAt : Returns the Sphero at the specified index
  * @return The Sphero locted at index
  */
-Sphero *SpheroManager::getSpheroAt(int index)
+Sphero *SpheroManager::getSpheroAt(unsigned int index)
 {
 	if(index >= spheroVec.size())
 		return NULL;
@@ -208,9 +210,9 @@ Sphero *SpheroManager::getSpheroAt(int index)
  */
 int SpheroManager::getSpheroIndex(string name)
 {
-	for(int i = 0; i < spheroNames.size(); ++i)
+	for(int i = 0; i < spheroNames->size(); ++i)
 	{
-		if(name == spheroNames[i])
+		if(name == (*spheroNames)[i])
 			return i;
 	}
 	return 0;

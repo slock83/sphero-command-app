@@ -42,7 +42,7 @@ class SpheroManager
 		/**
 		 * @brief listSpheros : Lists the currently connected Spheros
 		 */
-		vector<string> listSpheros();
+		vector<string> *listSpheros();
 
 		/**
 		 * @brief getSelectedIndex : Returns the index of the currently selected Sphero
@@ -83,7 +83,7 @@ class SpheroManager
 		 * @brief getSpheroAt : Returns the Sphero at the specified index
 		 * @return The Sphero locted at index
 		 */
-		Sphero* getSpheroAt(int index);
+		Sphero* getSpheroAt(unsigned int index);
 
 
 		/**
@@ -102,7 +102,7 @@ class SpheroManager
 		Sphero* s;
 		size_t nbActif;
 		vector<Sphero*> spheroVec;
-		vector<string> spheroNames;
+		vector<string> *spheroNames;
 
 		CommandHandler *_ch;
 };
