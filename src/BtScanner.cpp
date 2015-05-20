@@ -100,7 +100,6 @@ void BtScanner::addDevice(const QBluetoothDeviceInfo &info)
 
 		ui->list->addItem(item);
 	}
-
 }
 
 void BtScanner::startScan()

@@ -97,6 +97,7 @@ void MainWindow::updateStatus()
 
 void MainWindow::connectSphero(QString spheroInfos)
 {
+	setStatus("Trying to connect to selected Sphero...");
 	if(_ch->setParameter(spheroInfos.toStdString(), operation::CONNECT))
 		_ch->start();
 }

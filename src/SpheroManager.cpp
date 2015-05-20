@@ -69,8 +69,7 @@ unsigned int SpheroManager::getSelectedIndex()
  */
 bool SpheroManager::connectSphero(string address, string name)
 {
-	qDebug() << QString::fromStdString(address) << " " << QString::fromStdString(name);
-	if(address.length() ==0)
+	if(address.length() == 0)
 	{
 		ifstream myfile ("lastConnection");
 		if (myfile.is_open())
@@ -113,10 +112,10 @@ bool SpheroManager::connectSphero(string address, string name)
 		spheroNames->push_back(name);
 
 		s = sph;
-		ofstream myfile ("lastConnection", ios::out | ios::trunc);
+		ofstream myfile ("lastConnection", ios::out);
 		if (myfile.is_open())
 		{
-			myfile <<address;
+			myfile << address << " " << name;
 			myfile.close();
 			cerr << "Sphero address saved ! next time, just type \"connect\" :)"<< endl;
 		}
