@@ -62,7 +62,7 @@ class SpheroManager
 		 * @brief selectSphero : Selects a Sphero to command
 		 * @param spheroIndex : The index of the Sphero to activate in the list
 		 */
-        bool selectSphero(unsigned int spheroIndex);
+		bool selectSphero(unsigned int spheroIndex);
 
 
 		/**
@@ -78,6 +78,13 @@ class SpheroManager
 		 */
 		Sphero* getSphero();
 
+
+		/**
+		 * @brief getSphero : Returns the Sphero with the given name
+		 * @param name : The name used to search the Sphero
+		 * @return The selected Sphero
+		 */
+		Sphero* getSphero(string name);
 
 		/**
 		 * @brief getSpheroAt : Returns the Sphero at the specified index
@@ -99,7 +106,7 @@ class SpheroManager
 		int getNbSpheros();
 
 	private:
-        Sphero* s;
+		Sphero* s;
 		vector<Sphero*> spheroVec;
 		vector<string> *spheroNames;
 

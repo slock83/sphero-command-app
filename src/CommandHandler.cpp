@@ -3,8 +3,10 @@
 #include <sstream>
 #include <QDebug>
 
-using namespace std;
+#include <Sphero.hpp>
+#include <packets/Constants.hpp>
 
+using namespace std;
 
 #include "CommandHandler.h"
 #include "SpheroManager.h"
@@ -50,6 +52,7 @@ void CommandHandler::run()
 			string cmd;
 			*_cmdStream >> cmd;
 			handleCommand(cmd, *_cmdStream);
+			_cmdLock.unlock();
 		}
 			break;
 
@@ -57,18 +60,60 @@ void CommandHandler::run()
 		{
 			string addr, name;
 			*_cmdStream >> addr >> name;
-			getManager()->connectSphero(addr, name);
+			_cmdLock.unlock();
+
+			if(getManager()->connectSphero(addr, name))
+			{
+				Sphero* sph = _sm->getSphero();
+				sph->onData([this, sph](){
+
+					uint16_t xPos, yPos;
+					uint16_t xSpd, ySpd;
+					uint16_t angle;
+					if(sph->getDataBuffer()->waitForNext(dataTypes::FILTERED_YAW_IMU, angle) &&
+							sph->getDataBuffer()->waitForNext(dataTypes::ODOMETER_X, xPos) &&
+							sph->getDataBuffer()->waitForNext(dataTypes::ODOMETER_Y, yPos) &&
+							sph->getDataBuffer()->waitForNext(dataTypes::VELOCITY_X, xSpd) &&
+							sph->getDataBuffer()->waitForNext(dataTypes::VELOCITY_Y, ySpd))
+					{
+						int xPosi = (int16_t)xPos;
+						int yPosi = (int16_t)yPos;
+						int xSpdi = (int16_t)xSpd;
+						int ySpdi = (int16_t)ySpd;
+						int anglei = (int16_t)angle;
+						this->_appWin->updateInformations(xPosi, yPosi, xSpdi, ySpdi, anglei);
+					}
+				});
+			}
 		}
 			break;
 		case DISCONNECT:
 		{
 			string name;
 			*_cmdStream >> name;
+			_cmdLock.unlock();
 			int index = _sm->getSpheroIndex(name);
 			_sm->disconnectSphero(index);
 		}
+			break;
+		case TRACK:
+		{
+			string newName, oldName;
+			*_cmdStream >> newName >> oldName;
+			_cmdLock.unlock();
+
+			if(oldName != "")
+			{
+				Sphero* sph = _sm->getSphero(oldName);
+				sph->setDataStreaming(0, 0, 0, 0);
+
+			}
+
+			Sphero* sph = _sm->getSphero(newName);
+			sph->setDataStreaming(1, 1, mask::FILTERED_YAW_IMU, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::VELOCITY_X | mask2::VELOCITY_Y);
+		}
+			break;
 	}
-	_cmdLock.unlock();
 }
 
 void CommandHandler::setStatusBar(string string)
@@ -155,7 +200,12 @@ void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 		else if(command == "reset")
 		{
 			setStatusBar("Reseting locator");
-			_sm.getSphero()->configureLocator(0, 0, 0, 0);
+			_sm->getSphero()->configureLocator(0, 0, 0, 0);
+		}
+		else if(command == "read")
+		{
+			_sm->getSphero()->setDataStreaming(1, 1, mask::FILTERED_YAW_IMU, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::VELOCITY_X | mask2::VELOCITY_Y);
+			//_sm->getSphero()->setDataStreaming(1, 1, mask::FILTERED_YAW_IMU, 0);
 		}
 	}
 }
@@ -176,10 +226,38 @@ void CommandHandler::handleConnect(stringstream &css)
 	//_appWin->setStatus(ss.str());
 
 	lockListUpdate(true);
+
+	bool connect = false;
+
 	if(address == "")
-		_sm->connectSphero(address, "Sphero");
+		connect = _sm->connectSphero(address, "Sphero");
 	else
-		_sm->connectSphero(address, address);
+		connect = _sm->connectSphero(address, address);
+
+	if(connect)
+	{
+		Sphero* sph = _sm->getSphero();
+		sph->onData([this, sph](){
+
+			uint16_t xPos, yPos;
+			uint16_t xSpd, ySpd;
+			uint16_t angle;
+			if(sph->getDataBuffer()->waitForNext(dataTypes::FILTERED_YAW_IMU, angle) &&
+					sph->getDataBuffer()->waitForNext(dataTypes::ODOMETER_X, xPos) &&
+					sph->getDataBuffer()->waitForNext(dataTypes::ODOMETER_Y, yPos) &&
+					sph->getDataBuffer()->waitForNext(dataTypes::VELOCITY_X, xSpd) &&
+					sph->getDataBuffer()->waitForNext(dataTypes::VELOCITY_Y, ySpd))
+			{
+				int xPosi = (int16_t)xPos;
+				int yPosi = (int16_t)yPos;
+				int xSpdi = (int16_t)xSpd;
+				int ySpdi = (int16_t)ySpd;
+				int anglei = (int16_t)angle;
+				this->_appWin->updateInformations(xPosi, yPosi, xSpdi, ySpdi, anglei);
+			}
+		});
+	}
+
 	lockListUpdate(false);
 }
 

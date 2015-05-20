@@ -22,7 +22,8 @@ enum operation
 {
 	COMMAND,
 	CONNECT,
-	DISCONNECT
+	DISCONNECT,
+	TRACK
 };
 
 //Classes

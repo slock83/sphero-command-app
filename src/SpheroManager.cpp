@@ -15,6 +15,7 @@
 
 #include "bluetooth/bluez_adaptor.h"
 #include <Sphero.hpp>
+#include <packets/Constants.hpp>
 
 using namespace std;
 
@@ -184,6 +185,22 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 Sphero* SpheroManager::getSphero()
 {
 	return s;
+}
+
+
+/**
+ * @brief getSphero : Returns the Sphero with the given name
+ * @param name : The name used to search the Sphero
+ * @return The selected Sphero
+ */
+Sphero* SpheroManager::getSphero(string name)
+{
+	for(unsigned int i = 0; i < spheroNames->size(); ++i)
+	{
+		if((*spheroNames)[i] == name)
+			return spheroVec[i];
+	}
+	return NULL;
 }
 
 

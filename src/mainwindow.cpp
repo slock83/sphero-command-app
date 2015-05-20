@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 	timer->start(100);
 
+	updateInformations(0, 1, 2, 3, 6);
+
 }
 
 MainWindow::~MainWindow()
@@ -81,6 +83,13 @@ void MainWindow::setStatus(QString status)
 	updateList();
 }
 
+void MainWindow::updateInformations(int xPos, int yPos, int xSpd, int ySpd, int angle)
+{
+	ui->posLbl->setText(QString("(%1,%2)").arg(xPos).arg(yPos));
+	ui->speedLbl->setText(QString("(%1,%2)").arg(xSpd).arg(ySpd));
+	ui->angleLbl->setText(QString("%1°").arg(angle));
+}
+
 
 
 void MainWindow::on_sendBtn_3_clicked()
@@ -125,6 +134,8 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 {
 	QMenu menu(this);
 	QAction *disconnectAction = menu.addAction("Disconnect");
+	menu.addSeparator();
+	QAction *streamAction = menu.addAction("View position infos");
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
 	QListWidgetItem *currentItem = ui->spheroLst->currentItem();
 
@@ -138,4 +149,27 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 		else
 			emit setStatus("A command is already running, please retry");
 	}
+	else if(chosenAction == streamAction)
+	{
+		if(_ch->setParameter(text.toStdString(), operation::TRACK))
+			_ch->start();
+		else
+			emit setStatus("A command is already running, please retry");
+	}
+}
+
+void MainWindow::on_spheroLst_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+	string oldSphero, newSphero;
+
+	if(current == NULL)
+		return;
+
+	oldSphero = (previous == NULL) ? "" : previous->text().toStdString();
+	newSphero = current->text().toStdString();
+
+	stringstream ss("");
+	ss << newSphero << " " << oldSphero;
+	if(_ch->setParameter(ss.str(), operation::TRACK))
+		_ch->start();
 }
