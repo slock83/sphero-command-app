@@ -75,8 +75,6 @@ BtScanner::BtScanner(QWidget *parent)
 	// add context menu for devices to be able to pair device
 	ui->list->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->list, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(displayConnectMenu(QPoint)));
-	connect(localDevice, SIGNAL(pairingFinished(QBluetoothAddress,QBluetoothLocalDevice::Pairing))
-			, this, SLOT(pairingDone(QBluetoothAddress,QBluetoothLocalDevice::Pairing)));
 
 }
 

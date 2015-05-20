@@ -115,77 +115,68 @@ void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 	}
 	else if(command == "select")
 	{
-		//		handleSelect(css);
+		handleSelect(cmdStream);
 	}
 	else if(command == "disconnect")
 	{
 		handleDisconnect(cmdStream);
 	}
-	else if(command == "coll")
+	else
 	{
-		/*	if(isConnected()) {
+		if(!isConnected())
+			setStatusBar("Please connect first");
+		if(command == "coll")
+		{
+			/*	if(isConnected()) {
 			CollisionStruct coll;
 			sm.getSphero()->reportCollision(&coll);
 		}*/
-	}
-	//------------------------------ Others
-	else if(command == "changecolor")
-	{
-		//	handleCc(css);
-	}
-	else if(command == "backled")
-	{
-		//	handleBackLED(css);
-	}
-	else if(command == "roll")
-	{
-		//	handleRoll(css);
-	}
-	else if(command == "head")
-	{
-		//	handleHead(css);
-	}
-	else if(command == "collision")
-	{
-		//	handleCollision();
-	}
-	else if(command == "ping")
-	{
-		//	ping();
-	}
-	else if(command == "setit")
-	{
-		//	handleIT(css);
-	}
-	else if(command == "sleep")
-	{
-		//	handleSleep(css);
-	}
-	else if(command == "exit")
-	{
-		/*		//To avoid memLeaks
-		while(sm.getNbSpheros() > 0)
-		{
-			sm.disconnectSphero(0);
 		}
-
-		return 0;*/
-	}
-	else if(command == "read")
-	{
-		/*	if(!isConnected()) cout << "please connect first" <<endl;
+		//------------------------------ Others
+		else if(command == "changecolor")
+		{
+			handleChangeColor(cmdStream);
+		}
+		else if(command == "backled")
+		{
+			//	handleBackLED(css);
+		}
+		else if(command == "roll")
+		{
+			//	handleRoll(css);
+		}
+		else if(command == "head")
+		{
+			//	handleHead(css);
+		}
+		else if(command == "collision")
+		{
+			//	handleCollision();
+		}
+		else if(command == "ping")
+		{
+			//	ping();
+		}
+		else if(command == "setit")
+		{
+			//	handleIT(css);
+		}
+		else if(command == "read")
+		{
+			/*	if(!isConnected()) cout << "please connect first" <<endl;
 
 		else sm.getSphero()->setDataStreaming(1, 1, 0, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y);*/
-	}
-	else if(command == "reset")
-	{
-		/*	if(!isConnected()) cout << "please connect first" <<endl;
+		}
+		else if(command == "reset")
+		{
+			/*	if(!isConnected()) cout << "please connect first" <<endl;
 
 		else sm.getSphero()->configureLocator(0, 0, 0, 0);*/
-	}
-	else
-	{
+		}
+		else
+		{
 
+		}
 	}
 	//	showHelp();
 
@@ -253,19 +244,47 @@ void CommandHandler::handleSelect(stringstream& css)
 	setStatusBar(ss.str());
 }
 
-void CommandHandler::handleSleep(stringstream& css)
+void CommandHandler::handleChangeColor(stringstream &css)
 {
-	if(!isConnected()) return;
+	int r, g, b;
+	css >> r >> g >> b;
 
-	unsigned int time;
-	css >> time;
-	_sm->getSphero()->sleep((uint16_t) time);
+
 	stringstream ss("");
-	ss << "sphero sent to sleep for "<< time << " seconds";
+	ss << "Changing Sphero color to : (" << r%256 << "," << g%256 << "," << b%256 << ")";
+
+
 	setStatusBar(ss.str());
-	_sm->getSphero()->disconnect();
-	/**
-	* sleep(time+3);
-	* sm.getSphero()->connect();
-	**/
+
+	_sm->getSphero()->setColor(r%256, g%256, b%256);
+}
+
+void CommandHandler::handleBackled(stringstream &css)
+{
+	int intensity;
+	css >> intensity;
+
+
+	stringstream ss("");
+	ss << "Changing Sphero backled intensity to : " << intensity%256;
+
+
+	setStatusBar(ss.str());
+
+	_sm->getSphero()->setBackLedOutput(intensity%256);
+}
+
+void CommandHandler::handleCollision(stringstream &css)
+{
+	bool enable;
+	css >> enable;
+
+	if(enable)
+	{
+		int Xt, Xspd, Yt, Yspd, dead;
+		css >> Xt >> Xspd >> Yt >> Yspd >> dead;
+		_sm->getSphero()->enableCollisionDetection(Xt, Xspd, Yt, Yspd, dead);
+	}
+	else
+		_sm->getSphero()->disableCollisionDetection();
 }

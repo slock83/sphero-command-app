@@ -58,7 +58,6 @@ void MainWindow::updateList()
 		ui->spheroLst->clear();
 		for(string name : *names)
 		{
-			qDebug() << QString::fromStdString(name);
 			ui->spheroLst->addItem(QString::fromStdString(name));
 		}
 

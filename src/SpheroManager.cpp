@@ -95,6 +95,11 @@ bool SpheroManager::connectSphero(string address, string name)
 		sph->setColor(red, green, blue, false);
 	});
 
+
+	sph->onDisconnect([this](){
+		_ch->setStatusBar("Sphero disconnected");
+	});
+
 	/*sph->onData([sph](){
 		uint16_t var;
 
@@ -158,9 +163,6 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 		{
 			s = NULL;
 		}
-		spheroVec[spheroIndex]->onDisconnect([this](){
-			_ch->setStatusBar("Sphero disconnected");
-		});
 
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];
