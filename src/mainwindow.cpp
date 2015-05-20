@@ -22,8 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	_ch = new CommandHandler(this);
+	_btScan = new BtScanner(this);
 
-	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)), Qt::QueuedConnection);
+	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)));
+	QObject::connect(_btScan, SIGNAL(requestConnection(QString)), this, SLOT(connectSphero(QString)));
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 	timer->start(100);
@@ -34,6 +36,7 @@ MainWindow::~MainWindow()
 {
 	delete ui;
 	delete _ch;
+	delete _btScan;
 }
 
 void MainWindow::updateList()
@@ -55,12 +58,17 @@ void MainWindow::updateList()
 			ui->spheroLst->addItem(QString::fromStdString(name));
 		}
 
-		ui->spheroLst->item(newIndex)->setSelected(true);
-		QListWidgetItem *wi = ui->spheroLst->item(sel);
-		QFont font = wi->font();
-		font.setBold(true);
+		if(newIndex >= 0 && ui->spheroLst->count() > 0)
+			ui->spheroLst->item(newIndex)->setSelected(true);
 
-		wi->setFont(font);
+		QListWidgetItem *wi = ui->spheroLst->item(sel);
+		if(wi != NULL)
+		{
+			QFont font = wi->font();
+			font.setBold(true);
+			wi->setFont(font);
+		}
+
 	}
 }
 
@@ -87,6 +95,12 @@ void MainWindow::updateStatus()
 	ui->statusBar->showMessage(_status);
 }
 
+void MainWindow::connectSphero(QString spheroInfos)
+{
+	if(_ch->setParameter(spheroInfos.toStdString(), operation::CONNECT))
+		_ch->start();
+}
+
 void MainWindow::commandAction()
 {
 	string cmdLine = ui->commandLine_3->text().toStdString();
@@ -98,11 +112,7 @@ void MainWindow::commandAction()
 		emit setStatus("A command is already running, please retry");
 }
 
-void MainWindow::on_actionConnect_triggered()
-{
-}
-
 void MainWindow::on_actionConnect_2_triggered()
 {
-	bs.show();
+	_btScan->show();
 }

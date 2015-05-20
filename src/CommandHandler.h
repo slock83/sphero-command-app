@@ -18,6 +18,11 @@
 //Namespace
 using namespace std;
 
+enum operation
+{
+	COMMAND,
+	CONNECT
+};
 
 //Classes
 class MainWindow;
@@ -39,7 +44,7 @@ class CommandHandler : public QThread
 		 * @param str command to run
 		 * @return false if string was not added to the stream
 		 */
-		bool setParameter(string &str);
+		bool setParameter(string str, operation op = COMMAND);
 
 
 		void run() Q_DECL_OVERRIDE;
@@ -70,8 +75,9 @@ class CommandHandler : public QThread
 		QMutex _listUpdateLock;
 
 		stringstream *_cmdStream;
+		operation _op;
 
-        bool isConnected();
+		bool isConnected();
 
 	protected:
 

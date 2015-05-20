@@ -9,7 +9,7 @@ using namespace std;
 #include "CommandHandler.h"
 #include "SpheroManager.h"
 
-CommandHandler::CommandHandler(MainWindow *win): QThread(), _appWin(win), _cmdStream(NULL)
+CommandHandler::CommandHandler(MainWindow *win): QThread(), _appWin(win), _cmdStream(NULL), _op(COMMAND)
 {
 	_sm = new SpheroManager(this);
 }
@@ -19,7 +19,7 @@ CommandHandler::~CommandHandler()
 	delete _sm;
 }
 
-bool CommandHandler::setParameter(string &str)
+bool CommandHandler::setParameter(string str, operation op)
 {
 	if(_cmdStream != NULL)
 	{
@@ -31,19 +31,36 @@ bool CommandHandler::setParameter(string &str)
 	{
 		_cmdStream = new stringstream("");
 		*_cmdStream << str;
+		_op = op;
 		_cmdLock.unlock();
 		return true;
 	}
 	return false;
 }
 
+
 void CommandHandler::run()
 {
 	_cmdLock.lock();
 
-	string cmd;
-	*_cmdStream >> cmd;
-	handleCommand(cmd, *_cmdStream);
+	switch (_op)
+	{
+		case COMMAND:
+		{
+			string cmd;
+			*_cmdStream >> cmd;
+			handleCommand(cmd, *_cmdStream);
+		}
+			break;
+
+		case CONNECT:
+		{
+			string addr, name;
+			*_cmdStream >> addr >> name;
+			getManager()->connectSphero(addr, name);
+		}
+			break;
+	}
 	_cmdLock.unlock();
 }
 
@@ -60,7 +77,7 @@ SpheroManager *CommandHandler::getManager()
 bool CommandHandler::isConnected()
 {
 
-    if(_sm->getSphero() == NULL)
+	if(_sm->getSphero() == NULL)
 	{
 		stringstream ss("");
 		ss << "Error : sphero not connected !";
@@ -219,7 +236,7 @@ void CommandHandler::handleSelect(stringstream& css)
 	size_t idx;
 	css >> idx;
 	stringstream ss("");
-    if(_sm->selectSphero(idx))
+	if(_sm->selectSphero(idx))
 	{
 		ss << "Selected sphero "<< idx;
 		setStatusBar(ss.str());
@@ -235,11 +252,11 @@ void CommandHandler::handleSleep(stringstream& css)
 
 	unsigned int time;
 	css >> time;
-    _sm->getSphero()->sleep((uint16_t) time);
+	_sm->getSphero()->sleep((uint16_t) time);
 	stringstream ss("");
 	ss << "sphero sent to sleep for "<< time << " seconds";
 	setStatusBar(ss.str());
-    _sm->getSphero()->disconnect();
+	_sm->getSphero()->disconnect();
 	/**
 	* sleep(time+3);
 	* sm.getSphero()->connect();

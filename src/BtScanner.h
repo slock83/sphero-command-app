@@ -55,27 +55,27 @@ QT_USE_NAMESPACE
 
 class BtScanner : public QDialog
 {
-	Q_OBJECT
+		Q_OBJECT
 
-public:
-	BtScanner(QWidget *parent = 0);
-	~BtScanner();
+	public:
+		BtScanner(QWidget *parent = 0);
+		~BtScanner();
 
-public slots:
-	void addDevice(const QBluetoothDeviceInfo&);
-	void displayPairingMenu(const QPoint &pos);
-	void pairingDone(const QBluetoothAddress&, QBluetoothLocalDevice::Pairing);
-private slots:
-	void startScan();
-	void scanFinished();
-	void setGeneralUnlimited(bool unlimited);
-	void itemActivated(QListWidgetItem *item);
-	void hostModeStateChanged(QBluetoothLocalDevice::HostMode);
+	signals:
+		void requestConnection(QString);
 
-private:
-	QBluetoothDeviceDiscoveryAgent *discoveryAgent;
-	QBluetoothLocalDevice *localDevice;
-	Ui_BtScanner *ui;
+	public slots:
+		void addDevice(const QBluetoothDeviceInfo&);
+		void displayConnectMenu(const QPoint &pos);
+	private slots:
+		void startScan();
+		void scanFinished();
+		void connectSphero();
+
+	private:
+		QBluetoothDeviceDiscoveryAgent *discoveryAgent;
+		QBluetoothLocalDevice *localDevice;
+		Ui_BtScanner *ui;
 };
 
 #endif

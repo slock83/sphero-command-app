@@ -69,6 +69,7 @@ unsigned int SpheroManager::getSelectedIndex()
  */
 bool SpheroManager::connectSphero(string address, string name)
 {
+	qDebug() << QString::fromStdString(address) << " " << QString::fromStdString(name);
 	if(address.length() ==0)
 	{
 		ifstream myfile ("lastConnection");
@@ -137,12 +138,12 @@ bool SpheroManager::connectSphero(string address, string name)
  */
 bool SpheroManager::selectSphero(unsigned int spheroIndex)
 {
-    if(spheroVec.size() > spheroIndex)
+	if(spheroVec.size() > spheroIndex)
 	{
 		s = spheroVec[spheroIndex];
-        return true;
-    }
-    return false;
+		return true;
+	}
+	return false;
 }
 
 
@@ -152,7 +153,7 @@ bool SpheroManager::selectSphero(unsigned int spheroIndex)
  */
 void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 {
-    if(spheroVec.size() > spheroIndex)
+	if(spheroVec.size() > spheroIndex)
 	{
 		if(s == spheroVec[spheroIndex])
 		{
@@ -205,7 +206,7 @@ Sphero *SpheroManager::getSpheroAt(unsigned int index)
  */
 int SpheroManager::getSpheroIndex(string name)
 {
-    for(unsigned int i = 0; i < spheroNames->size(); ++i)
+	for(unsigned int i = 0; i < spheroNames->size(); ++i)
 	{
 		if(name == (*spheroNames)[i])
 			return i;
@@ -219,5 +220,5 @@ int SpheroManager::getSpheroIndex(string name)
  */
 int SpheroManager::getNbSpheros()
 {
-    return spheroVec.size();
+	return spheroVec.size();
 }

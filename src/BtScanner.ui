@@ -22,9 +22,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="scanLbl">
+     <property name="text">
+      <string>No scan progressing</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="connect">
        <property name="text">
         <string>Connect</string>
        </property>

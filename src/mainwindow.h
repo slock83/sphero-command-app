@@ -30,8 +30,7 @@ class MainWindow : public QMainWindow
 		void on_commandLine_3_returnPressed();
 
 		void updateStatus();
-
-		void on_actionConnect_triggered();
+		void connectSphero(QString spheroInfos);
 
 		void on_actionConnect_2_triggered();
 
@@ -39,7 +38,7 @@ class MainWindow : public QMainWindow
 		void setStatus(QString status);
 
 	private:
-		BtScanner bs;
+		BtScanner *_btScan;
 		Ui::MainWindow *ui;
 		QString _status;
 
