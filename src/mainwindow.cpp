@@ -14,6 +14,7 @@ using namespace std;
 #include "CommandHandler.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "BtScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -95,4 +96,13 @@ void MainWindow::commandAction()
 		_ch->start();
 	else
 		emit setStatus("A command is already running, please retry");
+}
+
+void MainWindow::on_actionConnect_triggered()
+{
+}
+
+void MainWindow::on_actionConnect_2_triggered()
+{
+	bs.show();
 }

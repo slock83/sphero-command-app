@@ -8,6 +8,7 @@ using namespace std;
 
 class CommandHandler;
 #include "CommandHandler.h"
+#include "BtScanner.h"
 
 namespace Ui {
 	class MainWindow;
@@ -30,10 +31,15 @@ class MainWindow : public QMainWindow
 
 		void updateStatus();
 
+		void on_actionConnect_triggered();
+
+		void on_actionConnect_2_triggered();
+
 	public slots:
 		void setStatus(QString status);
 
 	private:
+		BtScanner bs;
 		Ui::MainWindow *ui;
 		QString _status;
 

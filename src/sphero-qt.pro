@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core bluetooth gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,16 +16,21 @@ SOURCES += main.cpp\
 		mainwindow.cpp \
 	CommandHandler.cpp \
 	SpheroManager.cpp \
-	HistoryLineEdit.cpp
+	HistoryLineEdit.cpp \
+	BtScanner.cpp
 
 HEADERS  += mainwindow.h \
 	CommandHandler.h \
 	SpheroManager.h \
-	HistoryLineEdit.h
+	HistoryLineEdit.h \
+	BtScanner.h
 
 INCLUDEPATH += ../lib
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+	BtScanner.ui
+
+target.path = $$[QT_INSTALL_EXAMPLES]/bluetooth/btscanner
 
 CONFIG   += c++11
 
