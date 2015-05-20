@@ -21,7 +21,8 @@ using namespace std;
 enum operation
 {
 	COMMAND,
-	CONNECT
+	CONNECT,
+	DISCONNECT
 };
 
 //Classes

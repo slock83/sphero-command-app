@@ -63,7 +63,6 @@ BtScanner::BtScanner(QWidget *parent)
 
 	discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
 
-	//connect(ui->inquiryType, SIGNAL(toggled(bool)), this, SLOT(setGeneralUnlimited(bool)));
 	connect(ui->scan, SIGNAL(clicked()), this, SLOT(startScan()));
 
 	connect(discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),

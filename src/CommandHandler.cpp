@@ -60,6 +60,13 @@ void CommandHandler::run()
 			getManager()->connectSphero(addr, name);
 		}
 			break;
+		case DISCONNECT:
+		{
+			string name;
+			*_cmdStream >> name;
+			int index = _sm->getSpheroIndex(name);
+			_sm->disconnectSphero(index);
+		}
 	}
 	_cmdLock.unlock();
 }

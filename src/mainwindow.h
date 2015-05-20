@@ -34,6 +34,8 @@ class MainWindow : public QMainWindow
 
 		void on_actionConnect_2_triggered();
 
+		void customContextMenuRequested(const QPoint &pos);
+
 	public slots:
 		void setStatus(QString status);
 

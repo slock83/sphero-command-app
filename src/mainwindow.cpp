@@ -26,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)));
 	QObject::connect(_btScan, SIGNAL(requestConnection(QString)), this, SLOT(connectSphero(QString)));
+
+	ui->spheroLst->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(ui->spheroLst, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
+
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 	timer->start(100);
@@ -116,4 +120,23 @@ void MainWindow::commandAction()
 void MainWindow::on_actionConnect_2_triggered()
 {
 	_btScan->show();
+}
+
+void MainWindow::customContextMenuRequested(const QPoint &pos)
+{
+	QMenu menu(this);
+	QAction *disconnectAction = menu.addAction("Disconnect");
+	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
+	QListWidgetItem *currentItem = ui->spheroLst->currentItem();
+
+	QString text = currentItem->text();
+	if(chosenAction == disconnectAction)
+	{
+		string spheroName = text.toStdString();
+
+		if(_ch->setParameter(spheroName, operation::DISCONNECT))
+			_ch->start();
+		else
+			emit setStatus("A command is already running, please retry");
+	}
 }
