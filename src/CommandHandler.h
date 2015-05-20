@@ -71,7 +71,7 @@ class CommandHandler : public QThread
 
 		stringstream *_cmdStream;
 
-        void isConnected();
+        bool isConnected();
 
 	protected:
 

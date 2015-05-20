@@ -27,7 +27,7 @@ using namespace std;
 /**
  * @brief SpheroManager : Constructor
  */
-SpheroManager::SpheroManager(CommandHandler *ch):s(NULL), nbActif(0), _ch(ch)
+SpheroManager::SpheroManager(CommandHandler *ch):s(NULL), _ch(ch)
 {
 	spheroNames = new vector<string>();
 }
@@ -108,7 +108,6 @@ bool SpheroManager::connectSphero(string address, string name)
 	if(sph->connect())
 	{
 		_ch->setStatusBar("Sphero connected successfully");
-		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
 		spheroNames->push_back(name);
 
@@ -138,7 +137,7 @@ bool SpheroManager::connectSphero(string address, string name)
  */
 bool SpheroManager::selectSphero(unsigned int spheroIndex)
 {
-	if(nbActif > spheroIndex)
+    if(spheroVec.size() > spheroIndex)
 	{
 		s = spheroVec[spheroIndex];
         return true;
@@ -153,7 +152,7 @@ bool SpheroManager::selectSphero(unsigned int spheroIndex)
  */
 void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 {
-	if(nbActif > spheroIndex)
+    if(spheroVec.size() > spheroIndex)
 	{
 		if(s == spheroVec[spheroIndex])
 		{
@@ -166,7 +165,6 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];
 		//cout << "Sphero : " << spheroNames[spheroIndex] << " has been removed." << endl;
-		nbActif--;
 		spheroVec.erase(spheroVec.begin() + spheroIndex);
 		spheroNames->erase(spheroNames->begin() + spheroIndex);
 	}
@@ -207,7 +205,7 @@ Sphero *SpheroManager::getSpheroAt(unsigned int index)
  */
 int SpheroManager::getSpheroIndex(string name)
 {
-	for(int i = 0; i < spheroNames->size(); ++i)
+    for(unsigned int i = 0; i < spheroNames->size(); ++i)
 	{
 		if(name == (*spheroNames)[i])
 			return i;
@@ -221,5 +219,5 @@ int SpheroManager::getSpheroIndex(string name)
  */
 int SpheroManager::getNbSpheros()
 {
-	return nbActif;
+    return spheroVec.size();
 }

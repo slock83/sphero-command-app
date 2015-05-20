@@ -57,10 +57,10 @@ SpheroManager *CommandHandler::getManager()
 	return _sm;
 }
 
-void CommandHandler::isConnected()
+bool CommandHandler::isConnected()
 {
 
-	if(sm.getSphero() == NULL)
+    if(_sm->getSphero() == NULL)
 	{
 		stringstream ss("");
 		ss << "Error : sphero not connected !";
@@ -219,7 +219,7 @@ void CommandHandler::handleSelect(stringstream& css)
 	size_t idx;
 	css >> idx;
 	stringstream ss("");
-	if(sm.selectSphero(idx))
+    if(_sm->selectSphero(idx))
 	{
 		ss << "Selected sphero "<< idx;
 		setStatusBar(ss.str());
@@ -235,11 +235,11 @@ void CommandHandler::handleSleep(stringstream& css)
 
 	unsigned int time;
 	css >> time;
-	sm.getSphero()->sleep((uint16_t) time);
+    _sm->getSphero()->sleep((uint16_t) time);
 	stringstream ss("");
 	ss << "sphero sent to sleep for "<< time << " seconds";
 	setStatusBar(ss.str());
-	sm.getSphero()->disconnect();
+    _sm->getSphero()->disconnect();
 	/**
 	* sleep(time+3);
 	* sm.getSphero()->connect();
