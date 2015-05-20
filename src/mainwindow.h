@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 		explicit MainWindow(QWidget *parent = 0);
 		~MainWindow();
 
+		void updateList();
 
 	private slots:
 		void on_sendBtn_3_clicked();

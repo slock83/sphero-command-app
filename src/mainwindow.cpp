@@ -2,6 +2,7 @@
 #include <QString>
 #include <QThread>
 #include <QTimer>
+#include <QFont>
 
 #include <string>
 #include <sstream>
@@ -30,6 +31,27 @@ MainWindow::~MainWindow()
 {
 	delete ui;
 	delete _ch;
+}
+
+void MainWindow::updateList()
+{
+	vector<string> names = _ch->getManager()->listSpheros();
+	string selected = ui->spheroLst->currentItem()->text().toStdString();
+	int newIndex = _ch->getManager()->getSpheroIndex(selected);
+	int sel = _ch->getManager()->getSelectedIndex();
+
+	ui->spheroLst->clear();
+	for(string name : names)
+	{
+		ui->spheroLst->addItem(QString::fromStdString(name));
+	}
+
+	ui->spheroLst->item(newIndex)->setSelected(true);
+	QListWidgetItem *wi = ui->spheroLst->item(sel);
+	QFont font = wi->font();
+	font.setBold(true);
+
+	wi->setFont(font);
 }
 
 void MainWindow::setStatus(QString status)
@@ -64,4 +86,6 @@ void MainWindow::commandAction()
 		_ch->start();
 	else
 		emit setStatus("A command is already running, please retry");
+
+	updateList();
 }

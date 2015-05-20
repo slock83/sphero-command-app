@@ -60,11 +60,12 @@ unsigned int SpheroManager::getSelectedIndex()
 }
 
 
+
 /**
  * @brief connectSphero : Connects a new Sphero into the application
  * @param address : The Sphero bluetooth address
  */
-bool SpheroManager::connectSphero(string address)
+bool SpheroManager::connectSphero(string address, string name)
 {
 	if(address.length() ==0)
 	{
@@ -107,7 +108,7 @@ bool SpheroManager::connectSphero(string address)
 		_ch->setStatusBar("Sphero connected successfully");
 		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
-		spheroNames.push_back("Sphero"+idx);
+		spheroNames.push_back(name);
 
 		s = sph;
 		ofstream myfile ("lastConnection", ios::out | ios::trunc);
@@ -162,6 +163,7 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 		spheroVec[spheroIndex]->onDisconnect([this](){
 			_ch->setStatusBar("Sphero disconnected");
 		});
+
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];
 		//cout << "Sphero : " << spheroNames[spheroIndex] << " has been removed." << endl;
@@ -183,6 +185,35 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 Sphero* SpheroManager::getSphero()
 {
 	return s;
+}
+
+
+/**
+ * @brief getSpheroAt : Returns the Sphero at the specified index
+ * @return The Sphero locted at index
+ */
+Sphero *SpheroManager::getSpheroAt(int index)
+{
+	if(index >= spheroVec.size())
+		return NULL;
+
+	return spheroVec[index];
+}
+
+
+/**
+ * @brief getSpheroIndex : Gets the index of a given sphero
+ * @param name : The Sphero's name
+ * @return the index of this sphero, or 0 if it doesn't exist
+ */
+int SpheroManager::getSpheroIndex(string name)
+{
+	for(int i = 0; i < spheroNames.size(); ++i)
+	{
+		if(name == spheroNames[i])
+			return i;
+	}
+	return 0;
 }
 
 

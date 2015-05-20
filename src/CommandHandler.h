@@ -31,6 +31,8 @@ class CommandHandler : public QThread
 
 		void setStatusBar(string string);
 
+		SpheroManager* getManager();
+
 	signals:
 
 		void requestStatusBarUpdate(QString);

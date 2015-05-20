@@ -69,7 +69,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QListWidget" name="listWidget">
+       <widget class="QListWidget" name="spheroLst">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -85,31 +85,6 @@
         <property name="styleSheet">
          <string notr="true">background-color: rgb(196, 196, 196);</string>
         </property>
-        <item>
-         <property name="text">
-          <string>Nouvel élément</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Nouvel élément</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Nouvel élément</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Nouvel élément</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Nouvel élément</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>

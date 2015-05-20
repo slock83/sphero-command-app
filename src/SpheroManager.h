@@ -55,7 +55,7 @@ class SpheroManager
 		 * @brief connectSphero : Connects a new Sphero into the application
 		 * @param address : The Sphero bluetooth address
 		 */
-		bool connectSphero(string address);
+		bool connectSphero(string address, string name);
 
 
 		/**
@@ -78,6 +78,20 @@ class SpheroManager
 		 */
 		Sphero* getSphero();
 
+
+		/**
+		 * @brief getSpheroAt : Returns the Sphero at the specified index
+		 * @return The Sphero locted at index
+		 */
+		Sphero* getSpheroAt(int index);
+
+
+		/**
+		 * @brief getSpheroIndex : Gets the index of a given sphero
+		 * @param name : The Sphero's name
+		 * @return the index of this sphero, or 0 if it doesn't exist
+		 */
+		int getSpheroIndex(string name);
 
 		/**
 		 * @brief getNbSpheros : Returns the number of active Spheros

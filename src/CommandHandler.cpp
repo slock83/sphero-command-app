@@ -52,6 +52,11 @@ void CommandHandler::setStatusBar(string string)
 	emit requestStatusBarUpdate(QString::fromStdString(string));
 }
 
+SpheroManager *CommandHandler::getManager()
+{
+	return _sm;
+}
+
 
 void CommandHandler::handleCommand(string& command, stringstream& cmdStream)
 {
@@ -156,7 +161,7 @@ void CommandHandler::handleConnect(stringstream &css)
 	setStatusBar(ss.str());
 	//_appWin->setStatus(ss.str());
 
-	_sm->connectSphero(address);
+	_sm->connectSphero(address, address);
 }
 
 void CommandHandler::handleDisconnect(stringstream &css)
@@ -164,8 +169,15 @@ void CommandHandler::handleDisconnect(stringstream &css)
 	int index;
 	css >> index;
 
-	stringstream ss("Disconnecting Sphero number ");
-	ss << index;
+
+	stringstream ss("");
+	if(index >= _sm->getNbSpheros())
+	{
+		ss << "Incorrect number";
+		setStatusBar(ss.str());
+		return;
+	}
+	ss << "Disconnecting Sphero number " << index;
 
 	setStatusBar(ss.str());
 	_sm->disconnectSphero(index);
