@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)), Qt::QueuedConnection);
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
-	timer->start(1000);
+	timer->start(100);
 
 }
 
@@ -52,7 +52,7 @@ void MainWindow::on_commandLine_3_returnPressed()
 void MainWindow::updateStatus()
 {
 	ui->statusBar->showMessage(_status);
-	update();
+	//update();
 }
 
 void MainWindow::commandAction()
