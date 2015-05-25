@@ -9,6 +9,7 @@
 
 //-------------------------------------------------------- System includes
 #include <stdint.h>
+#include "Coord.hpp"
 
 //-----------------------------------------------------------------  Types
 
@@ -30,6 +31,9 @@ struct point_struct_t
 	point_struct_t* south;
 	
 	point_struct_t();
+	
+	bool isNeighbour(point_struct_t const& point);
+	bool isNeighbour(coord_t const& point);
 };
 
 #endif // POINTSTRUCT_HPP
