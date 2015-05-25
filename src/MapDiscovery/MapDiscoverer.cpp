@@ -77,4 +77,5 @@ void* MapDiscoverer::SpheroThread(void* sphero_ptr){
 
     return (void*) NULL;
 }
+
 //Private classes

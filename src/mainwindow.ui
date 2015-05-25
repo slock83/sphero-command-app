@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Sphero - play with your balls !</string>
+   <string>SpheroMapper</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -190,7 +190,7 @@
      <x>0</x>
      <y>0</y>
      <width>794</width>
-     <height>27</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="focusPolicy">
