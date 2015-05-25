@@ -22,7 +22,8 @@ SOURCES += main.cpp\
 	MapDiscovery/PointStruct.cpp \
 	Joystick/JoystickAdaptor.cpp \
 	Joystick/JoystickPlayer.cpp \
-    Calibrator.cpp
+    Calibrator.cpp \
+    MapDiscovery/MapViewer.cpp
 
 HEADERS  += mainwindow.h \
 	CommandHandler.h \
@@ -35,13 +36,15 @@ HEADERS  += mainwindow.h \
 	MapDiscovery/WorldMap.hpp \
 	Joystick/JoystickAdaptor.h \
 	Joystick/JoystickPlayer.h \
-    Calibrator.h
+    Calibrator.h \
+    MapDiscovery/MapViewer.h
 
 INCLUDEPATH +=
 
 FORMS    += mainwindow.ui \
 	BtScanner.ui \
-    Calibrator.ui
+    Calibrator.ui \
+    MapDiscovery/MapViewer.ui
 
 CONFIG   += c++11
 
