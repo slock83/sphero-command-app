@@ -31,8 +31,6 @@ HEADERS  += mainwindow.h \
 	SpheroManager.h \
 	HistoryLineEdit.h \
 	BtScanner.h \
-	ui_BtScanner.h \
-	ui_mainwindow.h \
 	MapDiscovery/Coord.hpp \
 	MapDiscovery/MapDiscoverer.hpp \
 	MapDiscovery/PointStruct.hpp \
