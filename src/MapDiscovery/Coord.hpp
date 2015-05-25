@@ -16,11 +16,11 @@
 //------------------------------------------------------- Class definition
 struct coord_t
 {
-	uint8_t x;
-	uint8_t y;
+	uint16_t x;
+	uint16_t y;
 	
 	coord_t();
-	coord_t(uint8_t x, uint8_t y);
+	coord_t(uint16_t x, uint16_t y);
 	coord_t(coord_t const& coord);
 	
 	bool operator==(coord_t const& coord) const;
