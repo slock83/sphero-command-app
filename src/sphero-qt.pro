@@ -13,24 +13,26 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-mainwindow.cpp \
-CommandHandler.cpp \
-SpheroManager.cpp \
-HistoryLineEdit.cpp \
-BtScanner.cpp \
-MapDiscovery/Coord.cpp \
-MapDiscovery/MapDiscoverer.cpp \
-MapDiscovery/PointStruct.cpp \
-MapDiscovery/WorldMap.cpp \
-Joystick/JoystickAdaptor.cpp \
-Joystick/JoystickPlayer.cpp \
-Calibrator.cpp
-HEADERS += mainwindow.h \
+<<<<<<< HEAD
+		mainwindow.cpp \
+	CommandHandler.cpp \
+	SpheroManager.cpp \
+	HistoryLineEdit.cpp \
+	BtScanner.cpp \
+	MapDiscovery/Coord.cpp \
+	MapDiscovery/PointStruct.cpp \
+	MapDiscovery/WorldMap.cpp \
+	Joystick/JoystickAdaptor.cpp \
+	Joystick/JoystickPlayer.cpp \
+	Calibrator.cpp \
+	MapDiscovery/MapViewer.cpp
+
+HEADERS  += mainwindow.h \
 	CommandHandler.h \
 	SpheroManager.h \
 	HistoryLineEdit.h \
 	BtScanner.h \
-    ui_BtScanner.h \
+	ui_BtScanner.h \
 	ui_mainwindow.h \
 	MapDiscovery/Coord.hpp \
 	MapDiscovery/MapDiscoverer.hpp \
@@ -38,13 +40,15 @@ HEADERS += mainwindow.h \
 	MapDiscovery/WorldMap.hpp \
 	Joystick/JoystickAdaptor.h \
 	Joystick/JoystickPlayer.h \
-    Calibrator.h
+	Calibrator.h \
+	MapDiscovery/MapViewer.h
 
 INCLUDEPATH +=
 
 FORMS    += mainwindow.ui \
 	BtScanner.ui \
-    Calibrator.ui
+	Calibrator.ui \
+	MapDiscovery/MapViewer.ui
 
 CONFIG   += c++11
 

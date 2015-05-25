@@ -27,6 +27,10 @@ class Calibrator : public QDialog
 
 		void on_buttonBox_rejected();
 
+		void on_sliderAngle_valueChanged(int value);
+
+		void on_pushButton_clicked();
+
 	private:
 		Ui::Calibrator *ui;
 		Sphero* sphero;

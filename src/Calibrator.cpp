@@ -1,6 +1,9 @@
 #include "Calibrator.h"
 #include "ui_Calibrator.h"
 
+
+#include <QDebug>
+
 Calibrator::Calibrator(Sphero *sphero, int x, int y, int angle, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::Calibrator), sphero(sphero)
@@ -51,4 +54,14 @@ void Calibrator::on_buttonBox_accepted()
 void Calibrator::on_buttonBox_rejected()
 {
 	sphero->setBackLedOutput(0);
+}
+
+void Calibrator::on_sliderAngle_valueChanged(int value)
+{
+	on_sliderAngle_sliderMoved(value);
+}
+
+void Calibrator::on_pushButton_clicked()
+{
+	on_sliderAngle_sliderReleased();
 }
