@@ -276,11 +276,11 @@ void MainWindow::on_spheroLst_itemDoubleClicked(QListWidgetItem *item)
 void MainWindow::on_calibrateButton_clicked()
 {
 	posInfos infos = getPosition();
-	if(infos.angle < 0)
-		return;
+
 	if(_calibrator != NULL)
 		delete _calibrator;
-	_calibrator = new Calibrator(_ch->getManager()->getSphero(), infos.angle, infos.xPos, infos.yPos, this);
+
+	_calibrator = new Calibrator(_ch->getManager()->getSphero(), infos.xPos, infos.yPos, infos.angle, this);
 	_calibrator->setModal(true);
 	_calibrator->show();
 }

@@ -31,7 +31,7 @@ struct posInfos{
 			yPos = 0;
 			xSpd = 0;
 			ySpd = 0;
-			angle = -1;
+			angle = -361;
 		}
 };
 

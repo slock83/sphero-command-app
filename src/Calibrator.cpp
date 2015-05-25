@@ -47,3 +47,8 @@ void Calibrator::on_buttonBox_accepted()
 	sphero->configureLocator(0, ui->spinX->value(), ui->spinY->value(), 0);
 	sphero->setBackLedOutput(0);
 }
+
+void Calibrator::on_buttonBox_rejected()
+{
+	sphero->setBackLedOutput(0);
+}
