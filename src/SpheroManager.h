@@ -10,7 +10,7 @@
 //-------------------------------------------------------- System includes
 #include <string>
 #include <vector>
-#include <Sphero.hpp>
+#include <sphero/Sphero.hpp>
 
 using namespace std;
 

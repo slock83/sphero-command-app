@@ -3,8 +3,8 @@
 #include <sstream>
 #include <QDebug>
 
-#include <Sphero.hpp>
-#include <packets/Constants.hpp>
+#include <sphero/Sphero.hpp>
+#include <sphero/packets/Constants.hpp>
 
 using namespace std;
 

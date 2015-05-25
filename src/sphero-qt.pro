@@ -25,7 +25,7 @@ HEADERS  += mainwindow.h \
 	HistoryLineEdit.h \
 	BtScanner.h
 
-INCLUDEPATH += ../lib
+INCLUDEPATH += 
 
 FORMS    += mainwindow.ui \
 	BtScanner.ui

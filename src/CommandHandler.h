@@ -65,6 +65,7 @@ class CommandHandler : public QThread
 
 		/**
 		 * @brief requestStatusBarUpdate ask the status bar to update
+         * Sans blague...
 		 */
 		void requestStatusBarUpdate(QString);
 
