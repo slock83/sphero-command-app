@@ -39,18 +39,35 @@ class WorldMap
 
 
 		//------------------------------------------------ Public methods
-
-
-	private:
+		
+		/**
+		 * @brief addOutlinePoint : TODO
+		 *
+		 */
+		void addOutlinePoint(point_struct_t* point);
+		
+		/**
+		 * @brief addPoint : TODO
+		 *
+		 */
+		void addPoint(coord_t const& point);
+		
+		/**
+		 * @brief getPoint : TODO
+		 *
+		 */
+		coord_t go(coord_t const& point, direction_t direction);
+		
+		//--------------------------------------------- Public attributes
 	
-	// Contient l'association coordonnées <-> point_struct_t
-	// Chaque point_struct_t possède sa position, et des pointeurs
-	// vers chacun de ses voisins (si pas de voisin, nullptr)
-	points_map_t _points_map;
-	
-	// Contient les points qui forment le contour du graphe
-	// tous les points appartiennent à _points_map
-	outline_set_t _outline_set;
+		// Contient l'association coordonnées <-> point_struct_t
+		// Chaque point_struct_t possède sa position, et des pointeurs
+		// vers chacun de ses voisins (si pas de voisin, nullptr)
+		points_map_t _points_map;
+		
+		// Contient les points qui forment le contour du graphe
+		// tous les points appartiennent à _points_map
+		outline_set_t _outline_set;
 };
 
 #endif // WORLDMAP_HPP

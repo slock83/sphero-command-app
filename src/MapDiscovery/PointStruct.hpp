@@ -10,6 +10,13 @@
 //-------------------------------------------------------- System includes
 #include <stdint.h>
 
+//-----------------------------------------------------------------  Types
+
+enum direction_t
+{
+	NORTH, SOUTH, EAST, WEST
+};
+
 //------------------------------------------------------- Class definition
 struct point_struct_t
 {

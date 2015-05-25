@@ -34,7 +34,18 @@ class MapDiscoverer
 
 	private:
 	
-	WorldMap _world_map;
+		/**
+		 * @brief outlineDiscover : Découvre les contours d'une zone
+		 *        non accessible à partir d'un certain point
+		 * @param start_coord : la position initiale à partir de laquelle
+		 *        il est nécessaire de chercher les contours.
+		 * @param direction : la direction du sphero
+		 *
+		 */
+		void outlineDiscoverer(coord_t start_coord, direction_t direction);
+		
+		
+		WorldMap _world_map;
 };
 
 #endif // MAP_DISCOVERER_HPP
