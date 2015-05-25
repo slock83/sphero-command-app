@@ -67,6 +67,7 @@ class BtScanner : public QDialog
 	public slots:
 		void addDevice(const QBluetoothDeviceInfo&);
 		void displayConnectMenu(const QPoint &pos);
+
 	private slots:
 		void startScan();
 		void scanFinished();

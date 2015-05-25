@@ -88,15 +88,6 @@ bool SpheroManager::connectSphero(string address, string name)
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
 
-	sph->onCollision([sph](CollisionStruct* infos){
-		uint8_t red 	= (rand() + infos->timestamp) % 256;
-		uint8_t green 	= (rand() - (infos->timestamp / 13) ) % 256;
-		uint8_t blue 	= (rand() + infos->impact_component_y) % 256;
-
-		sph->setColor(red, green, blue, false);
-	});
-
-
 	sph->onDisconnect([this](){
 		_ch->setStatusBar("Sphero disconnected");
 	});
