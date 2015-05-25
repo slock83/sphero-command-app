@@ -38,7 +38,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Command:</string>
+           <string>Commande</string>
           </property>
          </widget>
         </item>
@@ -55,7 +55,7 @@
         <item>
          <widget class="QPushButton" name="sendBtn_3">
           <property name="text">
-           <string>Send</string>
+           <string>Envoyer</string>
           </property>
          </widget>
         </item>
@@ -105,7 +105,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Speed(cm/s):</string>
+            <string>Vitesse(cm/s):</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -121,14 +121,14 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>unknown</string>
+            <string>inconnue</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
           <widget class="QLabel" name="angleLbl">
            <property name="text">
-            <string>unknown</string>
+            <string>inconnue</string>
            </property>
           </widget>
          </item>
@@ -141,7 +141,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Facing:</string>
+            <string>Orientation:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -157,7 +157,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Pos(cm):</string>
+            <string>Pos. (cm):</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -173,7 +173,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>unknow</string>
+            <string>inconnue</string>
            </property>
           </widget>
          </item>
@@ -190,7 +190,7 @@
      <x>0</x>
      <y>0</y>
      <width>794</width>
-     <height>27</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="focusPolicy">
@@ -219,9 +219,10 @@ QMenuBar::item::selected {
     </property>
     <widget class="QMenu" name="menuConnect_recent">
      <property name="title">
-      <string>Connect recent</string>
+      <string>Spheros récents</string>
      </property>
     </widget>
+    <addaction name="separator"/>
     <addaction name="actionConnect_2"/>
     <addaction name="menuConnect_recent"/>
     <addaction name="separator"/>
@@ -229,7 +230,7 @@ QMenuBar::item::selected {
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>Aide</string>
     </property>
     <addaction name="actionAbout"/>
     <addaction name="actionManual"/>
@@ -240,22 +241,22 @@ QMenuBar::item::selected {
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>Quitter</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>À propos</string>
    </property>
   </action>
   <action name="actionManual">
    <property name="text">
-    <string>Manual</string>
+    <string>Manuel</string>
    </property>
   </action>
   <action name="actionConnect_2">
    <property name="text">
-    <string>Connect ...</string>
+    <string>Connexion ...</string>
    </property>
   </action>
   <action name="actionCoin">

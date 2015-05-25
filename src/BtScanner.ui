@@ -36,7 +36,7 @@
      <item>
       <widget class="QPushButton" name="connect">
        <property name="text">
-        <string>Connect</string>
+        <string>Connexion</string>
        </property>
       </widget>
      </item>
@@ -50,7 +50,7 @@
      <item>
       <widget class="QPushButton" name="quit">
        <property name="text">
-        <string>Cancel</string>
+        <string>Annuler</string>
        </property>
       </widget>
      </item>

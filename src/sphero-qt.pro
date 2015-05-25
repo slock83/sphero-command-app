@@ -39,3 +39,4 @@ unix:!macx: LIBS += -L$$PWD/../lib/ -lsphero
 INCLUDEPATH += $$PWD/../
 DEPENDPATH += $$PWD/../
 
+QMAKE_CXXFLAGS += -g
