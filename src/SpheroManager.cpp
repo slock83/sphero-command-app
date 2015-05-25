@@ -158,7 +158,7 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];
-		//cout << "Sphero : " << spheroNames[spheroIndex] << " has been removed." << endl;
+
 		spheroVec.erase(spheroVec.begin() + spheroIndex);
 		spheroNames->erase(spheroNames->begin() + spheroIndex);
 	}

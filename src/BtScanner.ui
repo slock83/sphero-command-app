@@ -27,7 +27,7 @@
    <item>
     <widget class="QLabel" name="scanLbl">
      <property name="text">
-      <string>No scan progressing</string>
+      <string>Pas de scan en cours</string>
      </property>
     </widget>
    </item>
