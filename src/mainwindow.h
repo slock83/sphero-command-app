@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -24,7 +26,11 @@ class MainWindow : public QMainWindow
 
 		void updateList();
 
+		void updateJoysticks();
+
 		void updateInformations(int xPos, int yPos, int xSpd, int ySpd, int angle);
+
+		void updateConnexions(Sphero *sph);
 
 	private slots:
 		void on_sendBtn_3_clicked();
@@ -38,7 +44,7 @@ class MainWindow : public QMainWindow
 
 		void customContextMenuRequested(const QPoint &pos);
 
-		void on_spheroLst_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+		//void on_spheroLst_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 	public slots:
 		void setStatus(QString status);
@@ -50,6 +56,9 @@ class MainWindow : public QMainWindow
 		QString _status;
 
 		CommandHandler *_ch;
+
+		QMenu *_joystickList;
+		map<int, Sphero*> joystickBindings;
 
 		void commandAction();
 };

@@ -3,11 +3,16 @@
 #include <QThread>
 #include <QTimer>
 #include <QFont>
+#include <QMenu>
+#include <QAction>
 
 #include <QDebug>
 
+#include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
+#include <map>
 
 using namespace std;
 
@@ -34,8 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 	timer->start(100);
 
-	updateInformations(0, 1, 2, 3, 6);
-
+	_joystickList = new QMenu("Connect joystick");
 }
 
 MainWindow::~MainWindow()
@@ -77,6 +81,48 @@ void MainWindow::updateList()
 	}
 }
 
+void MainWindow::updateJoysticks()
+{
+	int nbJoysticks;
+	system("ls /dev/input/ | grep js | wc -l > ./tmp");
+
+	ifstream inputList ("tmp", ios::in);
+	if (inputList.is_open())
+	{
+		inputList >> nbJoysticks;
+		inputList.close();
+	}
+
+	int jsIndexs[nbJoysticks];
+	system("ls /dev/input/ | grep js > ./tmp");
+
+	ifstream jsList ("tmp", ios::in);
+	if (jsList.is_open())
+	{
+		for(int i = 0; i < nbJoysticks; ++i)
+		{
+			int nb;
+			jsList >> nb;
+			jsIndexs[i] = nb;
+		}
+		jsList.close();
+	}
+
+	system("rm ./tmp");
+
+	_joystickList->clear();
+	for(int i = 0; i < nbJoysticks; ++i)
+	{
+		stringstream ss("");
+		ss << "Manette " << jsIndexs[i];
+		QAction* action = _joystickList->addAction(QString::fromStdString(ss.str()));
+		if(joystickBindings.find(jsIndexs[i]) != joystickBindings.end())
+			action->setEnabled(false);
+	}
+
+
+}
+
 void MainWindow::setStatus(QString status)
 {
 	_status = status;
@@ -88,6 +134,15 @@ void MainWindow::updateInformations(int xPos, int yPos, int xSpd, int ySpd, int 
 	ui->posLbl->setText(QString("(%1,%2)").arg(xPos).arg(yPos));
 	ui->speedLbl->setText(QString("(%1,%2)").arg(xSpd).arg(ySpd));
 	ui->angleLbl->setText(QString("%1°").arg(angle));
+}
+
+void MainWindow::updateConnexions(Sphero* sph)
+{
+	for(pair<int, Sphero*> p : joystickBindings)
+	{
+		if(sph == p.second)
+			joystickBindings.erase(joystickBindings.find(p.first));
+	}
 }
 
 
@@ -132,14 +187,22 @@ void MainWindow::on_actionConnect_2_triggered()
 
 void MainWindow::customContextMenuRequested(const QPoint &pos)
 {
+	updateJoysticks();
 	QMenu menu(this);
 	QAction *disconnectAction = menu.addAction("Disconnect");
+	QAction *discJsAction = menu.addAction("Déconnecter les manettes");
 	menu.addSeparator();
 	QAction *streamAction = menu.addAction("View position infos");
+	menu.addMenu(_joystickList);
+
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
 	QListWidgetItem *currentItem = ui->spheroLst->currentItem();
 
+	if(currentItem == NULL || chosenAction == NULL)
+		return;
 	QString text = currentItem->text();
+	QString actionText = chosenAction->text();
+
 	if(chosenAction == disconnectAction)
 	{
 		string spheroName = text.toStdString();
@@ -156,20 +219,18 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 		else
 			emit setStatus("A command is already running, please retry");
 	}
-}
-
-void MainWindow::on_spheroLst_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
-{
-	string oldSphero, newSphero;
-
-	if(current == NULL)
-		return;
-
-	oldSphero = (previous == NULL) ? "" : previous->text().toStdString();
-	newSphero = current->text().toStdString();
-
-	stringstream ss("");
-	ss << newSphero << " " << oldSphero;
-	if(_ch->setParameter(ss.str(), operation::TRACK))
-		_ch->start();
+	else if(chosenAction == discJsAction)
+	{
+		qDebug() << "Kwak";
+		updateConnexions(_ch->getManager()->getSphero(text.toStdString()));
+	}
+	else if(actionText.startsWith("Manette"))
+	{
+		qDebug() << "Coin";
+		stringstream ss("");
+		ss << actionText.toStdString();
+		int index;
+		ss >> index;
+		joystickBindings[index] = _ch->getManager()->getSphero(text.toStdString());
+	}
 }

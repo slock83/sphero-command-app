@@ -13,9 +13,9 @@
 #include <cstdint>
 #include <QDebug>
 
-#include "bluetooth/bluez_adaptor.h"
-#include <Sphero.hpp>
-#include <packets/Constants.hpp>
+#include <sphero/bluetooth/bluez_adaptor.h>
+#include <sphero/Sphero.hpp>
+#include <sphero/packets/Constants.hpp>
 
 using namespace std;
 

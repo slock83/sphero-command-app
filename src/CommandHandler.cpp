@@ -3,8 +3,8 @@
 #include <sstream>
 #include <QDebug>
 
-#include <Sphero.hpp>
-#include <packets/Constants.hpp>
+#include <sphero/Sphero.hpp>
+#include <sphero/packets/Constants.hpp>
 
 using namespace std;
 
@@ -84,6 +84,9 @@ void CommandHandler::run()
 						this->_appWin->updateInformations(xPosi, yPosi, xSpdi, ySpdi, anglei);
 					}
 				});
+				sph->onDisconnect([this, sph](){
+					_appWin->updateConnexions(sph);
+				});
 			}
 		}
 			break;
@@ -98,18 +101,18 @@ void CommandHandler::run()
 			break;
 		case TRACK:
 		{
-			string newName, oldName;
-			*_cmdStream >> newName >> oldName;
+			string newName;
+			*_cmdStream >> newName;
 			_cmdLock.unlock();
 
-			if(oldName != "")
+			Sphero* sph = _sm->getSphero(newName);
+			for(int i = 0; i < _sm->getNbSpheros(); ++i)
 			{
-				Sphero* sph = _sm->getSphero(oldName);
-				sph->setDataStreaming(0, 0, 0, 0);
-
+				Sphero *s = _sm->getSpheroAt(i);
+				if(s != sph)
+					s->setDataStreaming(0, 0, 0, 0);
 			}
 
-			Sphero* sph = _sm->getSphero(newName);
 			sph->setDataStreaming(1, 1, mask::FILTERED_YAW_IMU, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::VELOCITY_X | mask2::VELOCITY_Y);
 		}
 			break;
