@@ -165,7 +165,7 @@ void MainWindow::updateStatus()
 
 void MainWindow::connectSphero(QString spheroInfos)
 {
-	setStatus("Trying to connect to selected Sphero...");
+	setStatus("Tentative de connexion au Sphero sélectionné...");
 
 	if(_ch->setParameter(spheroInfos.toStdString(), operation::CONNECT))
 		_ch->start();
@@ -179,7 +179,7 @@ void MainWindow::commandAction()
 	if(_ch->setParameter(cmdLine))
 		_ch->start();
 	else
-		emit setStatus("A command is already running, please retry");
+		emit setStatus("Une commande est en cours d'exécution, veuillez réessayer");
 }
 
 void MainWindow::on_actionConnect_2_triggered()
@@ -191,10 +191,10 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 {
 	updateJoysticks();
 	QMenu menu(this);
-	QAction *disconnectAction = menu.addAction("Disconnect");
+	QAction *disconnectAction = menu.addAction("Déconnecter le Sphero");
 	QAction *discJsAction = menu.addAction("Déconnecter les manettes");
 	menu.addSeparator();
-	QAction *streamAction = menu.addAction("View position infos");
+	QAction *streamAction = menu.addAction("Voir les infos de position");
 	menu.addMenu(_joystickList);
 
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
@@ -212,27 +212,32 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 		if(_ch->setParameter(spheroName, operation::DISCONNECT))
 			_ch->start();
 		else
-			emit setStatus("A command is already running, please retry");
+			emit setStatus("Une commande est en cours d'exécution, veuillez réessayer");
 	}
 	else if(chosenAction == streamAction)
 	{
 		if(_ch->setParameter(text.toStdString(), operation::TRACK))
 			_ch->start();
 		else
-			emit setStatus("A command is already running, please retry");
+			emit setStatus("Une commande est en cours d'exécution, veuillez réessayer");
 	}
 	else if(chosenAction == discJsAction)
 	{
-		qDebug() << "Kwak";
 		updateConnexions(_ch->getManager()->getSphero(text.toStdString()));
 	}
 	else if(actionText.startsWith("Manette"))
 	{
-		qDebug() << "Coin";
 		stringstream ss("");
 		ss << actionText.toStdString();
 		int index;
 		ss >> index;
 		joystickBindings[index] = _ch->getManager()->getSphero(text.toStdString());
 	}
+}
+
+void MainWindow::on_spheroLst_itemDoubleClicked(QListWidgetItem *item)
+{
+	int index = _ch->getManager()->getSpheroIndex(item->text().toStdString());
+	_ch->getManager()->selectSphero(index);
+	setStatus(QString("Selecting Sphero %1").arg(item->text()));
 }

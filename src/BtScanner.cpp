@@ -104,12 +104,12 @@ void BtScanner::startScan()
 	ui->list->clear();
 	discoveryAgent->start();
 	ui->scan->setEnabled(false);
-	ui->scanLbl->setText("Scanning...");
+	ui->scanLbl->setText("Scan en cours...");
 }
 
 void BtScanner::scanFinished()
 {
-	ui->scanLbl->setText("Scan finished");
+	ui->scanLbl->setText("Scan terminé");
 	ui->scan->setEnabled(true);
 }
 
@@ -128,7 +128,7 @@ void BtScanner::connectSphero()
 void BtScanner::displayConnectMenu(const QPoint &pos)
 {
 	QMenu menu(this);
-	QAction *connectAction = menu.addAction("Connect");
+	QAction *connectAction = menu.addAction("Connecter");
 	QAction *chosenAction = menu.exec(ui->list->viewport()->mapToGlobal(pos));
 	QListWidgetItem *currentItem = ui->list->currentItem();
 

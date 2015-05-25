@@ -44,6 +44,8 @@ class MainWindow : public QMainWindow
 
 		void customContextMenuRequested(const QPoint &pos);
 
+		void on_spheroLst_itemDoubleClicked(QListWidgetItem *item);
+
 	public slots:
 		void setStatus(QString status);
 
