@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-		mainwindow.cpp \
+	mainwindow.cpp \
 	CommandHandler.cpp \
 	SpheroManager.cpp \
 	HistoryLineEdit.cpp \
