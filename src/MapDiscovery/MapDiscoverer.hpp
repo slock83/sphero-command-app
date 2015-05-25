@@ -8,12 +8,9 @@
 #define MAP_DISCOVERER_HPP
 
 //-------------------------------------------------------- System includes
-#include "Coord.hpp"
-
+#include "WorldMap.hpp"
 
 //------------------------------------------------------------------ Types
-
-typedef std::unordered_map<coord_t, point_struct_t*> world_map_t;
 
 //------------------------------------------------------- Class definition
 class MapDiscoverer
@@ -21,8 +18,7 @@ class MapDiscoverer
 	public:
 		//----------------------------------------------------- Operators
 
-		MapDiscoverer& operator=(const SpheroManager&) = delete;
-
+		MapDiscoverer& operator=(const MapDiscoverer&) = delete;
 
 		//--------------------------------------- Constructors/Destructor
 
@@ -38,7 +34,7 @@ class MapDiscoverer
 
 	private:
 	
-	world_map_t _map;
+	WorldMap _world_map;
 };
 
 #endif // MAP_DISCOVERER_HPP

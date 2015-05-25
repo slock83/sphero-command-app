@@ -17,7 +17,7 @@ coord_t::coord_t()
 {
 }
 
-coord_t::coord_t(uint8_t _x, uint8_t _y)
+coord_t::coord_t(uint16_t _x, uint16_t _y)
 	: x(_x), y(_y)
 {
 }
@@ -46,6 +46,6 @@ namespace std
 {
 	std::size_t hash<coord_t>::operator()(coord_t const& coord) const
 	{
-		return hash<uint8_t>()(coord.x) ^ hash<uint8_t>()(coord.y);
+		return hash<uint16_t>()(coord.x) ^ hash<uint16_t>()(coord.y);
 	}
 }
