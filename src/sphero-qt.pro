@@ -21,11 +21,7 @@ SOURCES += main.cpp\
     MapDiscovery/Coord.cpp \
     MapDiscovery/MapDiscoverer.cpp \
     MapDiscovery/PointStruct.cpp \
-    MapDiscovery/WorldMap.cpp \
-    moc_BtScanner.cpp \
-    moc_CommandHandler.cpp \
-    moc_HistoryLineEdit.cpp \
-    moc_mainwindow.cpp
+    MapDiscovery/WorldMap.cpp
 
 HEADERS  += mainwindow.h \
 	CommandHandler.h \
@@ -42,7 +38,8 @@ HEADERS  += mainwindow.h \
 INCLUDEPATH +=
 
 FORMS    += mainwindow.ui \
-	BtScanner.ui
+	BtScanner.ui \
+    calibrate.ui
 
 CONFIG   += c++11
 

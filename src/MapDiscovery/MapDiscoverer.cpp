@@ -6,6 +6,7 @@
 
 //-------------------------------------------------------- System includes
 #include <sphero/Sphero.hpp>
+#include <unistd.h>
 
 //--------------------------------------------------------- Local includes
 #include "MapDiscoverer.hpp"
@@ -14,7 +15,6 @@
 
 MapDiscoverer::MapDiscoverer()
 {
-    sem_init(&_semaphoreLancement, 0, 1);
 }
 
 MapDiscoverer::~MapDiscoverer()
@@ -54,21 +54,23 @@ void* MapDiscoverer::SpheroThread(void* sphero_ptr){
 				collision = true;
 			});
 
-	sphero->enableCollisionDetection(70, 100, 70, 100, 50);
+    sphero->enableCollisionDetection(80, 20, 80, 20, 80);
 
 	sphero->setColor(0, 0xff, 0);
 
 	while(!collision)
 	{
-		sphero->roll(80, 180);
+        sphero->roll(60, 180);
+        usleep(200000);
 	}
-	
+    usleep(500000);
 	sphero->setColor(0, 0xff, 0);
 
 	collision = false;
 	while(!collision)
 	{
-		sphero->roll(80, 270);
+        sphero->roll(60, 270);
+        usleep(200000);
 	}
 
 	sphero->setColor(0, 0xff, 0);

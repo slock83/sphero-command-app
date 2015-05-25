@@ -21,6 +21,7 @@ using namespace std;
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "BtScanner.h"
+#include "MapDiscovery/MapDiscoverer.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -195,6 +196,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	QAction *discJsAction = menu.addAction("Déconnecter les manettes");
 	menu.addSeparator();
 	QAction *streamAction = menu.addAction("Voir les infos de position");
+    QAction *discoverAction = menu.addAction("Rejoindre Dora");
 	menu.addMenu(_joystickList);
 
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
@@ -225,6 +227,11 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	{
 		updateConnexions(_ch->getManager()->getSphero(text.toStdString()));
 	}
+    else if(chosenAction == discoverAction)
+    {
+        MapDiscoverer *map = new MapDiscoverer;
+        map->addSphero(_ch->getManager()->getSphero(text.toStdString()));
+    }
 	else if(actionText.startsWith("Manette"))
 	{
 		stringstream ss("");

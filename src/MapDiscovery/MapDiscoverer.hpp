@@ -10,7 +10,6 @@
 //-------------------------------------------------------- System includes
 #include <list>
 #include <pthread.h>
-#include <sem.h>
 
 //-------------------------------------------------------- Personnal includes
 #include "WorldMap.hpp"
@@ -88,7 +87,7 @@ class MapDiscoverer
 	
 	*/
 
-    list<DiscoverAction> _actionList;
+    //list<DiscoverAction> _actionList;
 	list<pthread_t> _listPthread;
 };
 
