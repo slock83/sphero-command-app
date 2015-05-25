@@ -14,11 +14,13 @@
 //--------------------------------------------------------- Local includes
 #include "Coord.hpp"
 #include "PointStruct.hpp"
+#include "Polygon.hpp"
 
 //------------------------------------------------------------------ Types
 
 typedef std::unordered_map<coord_t, point_struct_t*> points_map_t;
-typedef std::unordered_set<point_struct_t*> outline_set_t;
+typedef std::unordered_map<point_struct_t*, polygon_t*> outlines_map_t;
+typedef std::unordered_set<polygon_t*> polygons_set_t;
 
 //------------------------------------------------------- Class definition
 class WorldMap
@@ -39,23 +41,27 @@ class WorldMap
 
 		points_map_t getMap();
 
-		outline_set_t getOutline();
+		outlines_map_t getOutline();
 
 
 		//------------------------------------------------ Public methods
 
 		/**
-		 * @brief addOutlinePoint : TODO
+		 * @brief addOutlinePolygonPoint : Ajoute un point qui sera
+		 *        ajouté à un polygone de contour.
 		 *
 		 */
-		void addOutlinePoint(point_struct_t* point);
 
+		bool addOutlinePolygonPoint(coord_t const& point);
+		
+		bool isOutlinePolygonClosed(coord_t const& point);
+		
 		/**
 		 * @brief addPoint : TODO
 		 *
 		 */
-		void addPoint(coord_t const& point);
-
+		point_struct_t* addPoint(coord_t const& point);
+		
 		/**
 		 * @brief getPoint : TODO
 		 *
@@ -68,10 +74,14 @@ class WorldMap
 		// Chaque point_struct_t possède sa position, et des pointeurs
 		// vers chacun de ses voisins (si pas de voisin, nullptr)
 		points_map_t _points_map;
-
-		// Contient les points qui forment le contour du graphe
-		// tous les points appartiennent à _points_map
-		outline_set_t _outline_set;
+		
+		// Contient les points qui forment les contours présents dans le
+		// graphe et le polygone à qui ils appartiennent.
+		// un polygone = un contour
+		outlines_map_t _outlines_map;
+		
+		// Contient la liste des polygones
+		polygons_set_t _polygons_set;
 };
 
 #endif // WORLDMAP_HPP
