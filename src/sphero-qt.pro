@@ -13,7 +13,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-<<<<<<< HEAD
 		mainwindow.cpp \
 	CommandHandler.cpp \
 	SpheroManager.cpp \
