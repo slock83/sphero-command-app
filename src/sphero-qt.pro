@@ -17,13 +17,27 @@ SOURCES += main.cpp\
 	CommandHandler.cpp \
 	SpheroManager.cpp \
 	HistoryLineEdit.cpp \
-	BtScanner.cpp
+	BtScanner.cpp \
+    MapDiscovery/Coord.cpp \
+    MapDiscovery/MapDiscoverer.cpp \
+    MapDiscovery/PointStruct.cpp \
+    MapDiscovery/WorldMap.cpp \
+    moc_BtScanner.cpp \
+    moc_CommandHandler.cpp \
+    moc_HistoryLineEdit.cpp \
+    moc_mainwindow.cpp
 
 HEADERS  += mainwindow.h \
 	CommandHandler.h \
 	SpheroManager.h \
 	HistoryLineEdit.h \
-	BtScanner.h
+	BtScanner.h \
+    MapDiscovery/Coord.hpp \
+    MapDiscovery/MapDiscoverer.hpp \
+    MapDiscovery/PointStruct.hpp \
+    MapDiscovery/WorldMap.hpp \
+    ui_BtScanner.h \
+    ui_mainwindow.h
 
 INCLUDEPATH +=
 
