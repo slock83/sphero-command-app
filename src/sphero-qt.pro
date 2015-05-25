@@ -25,17 +25,15 @@ HEADERS  += mainwindow.h \
 	HistoryLineEdit.h \
 	BtScanner.h
 
-INCLUDEPATH += ../lib
+#INCLUDEPATH += ../lib
 
 FORMS    += mainwindow.ui \
 	BtScanner.ui
 
-target.path = $$[QT_INSTALL_EXAMPLES]/bluetooth/btscanner
-
 CONFIG   += c++11
 
-unix:!macx: LIBS += -L$$PWD/../lib/ -lsphero
+unix:!macx: LIBS += -lsphero
 
-INCLUDEPATH += $$PWD/../
-DEPENDPATH += $$PWD/../
+#INCLUDEPATH += $$PWD/../
+#DEPENDPATH += $$PWD/../
 
