@@ -226,6 +226,8 @@ QMenuBar::item::selected {
     <addaction name="actionConnect_2"/>
     <addaction name="menuConnect_recent"/>
     <addaction name="separator"/>
+    <addaction name="actionCalibrer"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -262,6 +264,11 @@ QMenuBar::item::selected {
   <action name="actionCoin">
    <property name="text">
     <string>coin</string>
+   </property>
+  </action>
+  <action name="actionCalibrer">
+   <property name="text">
+    <string>Calibrer</string>
    </property>
   </action>
  </widget>

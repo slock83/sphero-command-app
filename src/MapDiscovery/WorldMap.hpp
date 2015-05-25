@@ -1,5 +1,5 @@
 /*************************************************************************
-	WorldMap  -  
+	WorldMap  -
 							 -------------------
 	started                : 25/05/2015
 *************************************************************************/
@@ -39,14 +39,19 @@ class WorldMap
 
 		virtual ~WorldMap();
 
+		points_map_t getMap();
+
+		outlines_map_t getOutline();
+
 
 		//------------------------------------------------ Public methods
-		
+
 		/**
 		 * @brief addOutlinePolygonPoint : Ajoute un point qui sera
 		 *        ajouté à un polygone de contour.
 		 *
 		 */
+
 		bool addOutlinePolygonPoint(coord_t const& point);
 		
 		bool isOutlinePolygonClosed(coord_t const& point);
@@ -62,9 +67,9 @@ class WorldMap
 		 *
 		 */
 		coord_t go(coord_t const& point, direction_t direction);
-		
+
 		//--------------------------------------------- Public attributes
-	
+
 		// Contient l'association coordonnées <-> point_struct_t
 		// Chaque point_struct_t possède sa position, et des pointeurs
 		// vers chacun de ses voisins (si pas de voisin, nullptr)
@@ -73,9 +78,9 @@ class WorldMap
 		// Contient les points qui forment les contours présents dans le
 		// graphe et le polygone à qui ils appartiennent.
 		// un polygone = un contour
-		// tous les points appartiennent à _points_map
 		outlines_map_t _outlines_map;
 		
+		// Contient la liste des polygones
 		polygons_set_t _polygons_set;
 };
 

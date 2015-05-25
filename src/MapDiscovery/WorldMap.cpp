@@ -23,6 +23,16 @@ WorldMap::~WorldMap()
 
 //--------------------------------------------------------- Public methods
 
+points_map_t WorldMap::getMap()
+{
+	return _points_map;
+}
+
+outlines_map_t WorldMap::getOutline()
+{
+	return _outlines_map;
+}
+
 bool WorldMap::addOutlinePolygonPoint(coord_t const& point)
 {
 	points_map_t::iterator it;

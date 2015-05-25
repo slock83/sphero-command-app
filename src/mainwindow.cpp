@@ -21,10 +21,13 @@ using namespace std;
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "BtScanner.h"
+#include "MapDiscovery/MapDiscoverer.hpp"
+#include "Joystick/JoystickPlayer.h"
+#include "Calibrator.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow), _calibrator(NULL)
 {
 	ui->setupUi(this);
 	_ch = new CommandHandler(this);
@@ -132,6 +135,14 @@ void MainWindow::setStatus(QString status)
 
 void MainWindow::updateInformations(int xPos, int yPos, int xSpd, int ySpd, int angle)
 {
+	_posMutex.lock();
+	_spheroPos.xPos = xPos;
+	_spheroPos.yPos = yPos;
+	_spheroPos.xSpd = xSpd;
+	_spheroPos.ySpd = ySpd;
+	_spheroPos.angle = angle;
+	_posMutex.unlock();
+
 	ui->posLbl->setText(QString("(%1,%2)").arg(xPos).arg(yPos));
 	ui->speedLbl->setText(QString("(%1,%2)").arg(xSpd).arg(ySpd));
 	ui->angleLbl->setText(QString("%1°").arg(angle));
@@ -142,8 +153,20 @@ void MainWindow::updateConnexions(Sphero* sph)
 	for(pair<int, Sphero*> p : joystickBindings)
 	{
 		if(sph == p.second)
+		{
 			joystickBindings.erase(joystickBindings.find(p.first));
+			joystickAdaptorBindings.at(p.first)->stop();
+			joystickAdaptorBindings.erase(joystickAdaptorBindings.find(p.first));
+		}
 	}
+}
+
+posInfos MainWindow::getPosition()
+{
+	_posMutex.lock();
+	posInfos infos(_spheroPos);
+	_posMutex.unlock();
+	return infos;
 }
 
 
@@ -161,6 +184,7 @@ void MainWindow::on_commandLine_3_returnPressed()
 void MainWindow::updateStatus()
 {
 	ui->statusBar->showMessage(_status);
+	updateList();
 }
 
 void MainWindow::connectSphero(QString spheroInfos)
@@ -169,6 +193,11 @@ void MainWindow::connectSphero(QString spheroInfos)
 
 	if(_ch->setParameter(spheroInfos.toStdString(), operation::CONNECT))
 		_ch->start();
+}
+
+void MainWindow::calibrator(int angle, int posX, int posY)
+{
+	_ch->getManager()->getSphero()->configureLocator(0, posX, posY, angle);
 }
 
 void MainWindow::commandAction()
@@ -195,6 +224,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	QAction *discJsAction = menu.addAction("Déconnecter les manettes");
 	menu.addSeparator();
 	QAction *streamAction = menu.addAction("Voir les infos de position");
+    QAction *discoverAction = menu.addAction("Rejoindre Dora");
 	menu.addMenu(_joystickList);
 
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
@@ -220,11 +250,17 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 			_ch->start();
 		else
 			emit setStatus("Une commande est en cours d'exécution, veuillez réessayer");
+		_spheroPos = posInfos();
 	}
 	else if(chosenAction == discJsAction)
 	{
 		updateConnexions(_ch->getManager()->getSphero(text.toStdString()));
 	}
+    else if(chosenAction == discoverAction)
+    {
+        MapDiscoverer *map = new MapDiscoverer;
+        map->addSphero(_ch->getManager()->getSphero(text.toStdString()));
+    }
 	else if(actionText.startsWith("Manette"))
 	{
 		stringstream ss("");
@@ -232,6 +268,8 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 		int index;
 		ss >> index;
 		joystickBindings[index] = _ch->getManager()->getSphero(text.toStdString());
+		joystickAdaptorBindings[index] = new JoystickPlayer(joystickBindings[index], index);
+		joystickAdaptorBindings[index]->start();
 	}
 }
 
@@ -240,4 +278,16 @@ void MainWindow::on_spheroLst_itemDoubleClicked(QListWidgetItem *item)
 	int index = _ch->getManager()->getSpheroIndex(item->text().toStdString());
 	_ch->getManager()->selectSphero(index);
 	setStatus(QString("Selecting Sphero %1").arg(item->text()));
+}
+
+void MainWindow::on_actionCalibrer_triggered()
+{
+	posInfos infos = getPosition();
+
+	if(_calibrator != NULL)
+		delete _calibrator;
+
+	_calibrator = new Calibrator(_ch->getManager()->getSphero(), infos.xPos, infos.yPos, infos.angle, this);
+	_calibrator->setModal(true);
+	_calibrator->show();
 }
