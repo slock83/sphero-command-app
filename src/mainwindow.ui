@@ -180,6 +180,13 @@
         </layout>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="calibrateButton">
+        <property name="text">
+         <string>Calibrer</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
