@@ -273,7 +273,7 @@ void MainWindow::on_spheroLst_itemDoubleClicked(QListWidgetItem *item)
 	setStatus(QString("Selecting Sphero %1").arg(item->text()));
 }
 
-void MainWindow::on_calibrateButton_clicked()
+void MainWindow::on_actionCalibrer_triggered()
 {
 	posInfos infos = getPosition();
 

@@ -68,7 +68,7 @@ class MainWindow : public QMainWindow
 
 		void on_spheroLst_itemDoubleClicked(QListWidgetItem *item);
 
-		void on_calibrateButton_clicked();
+		void on_actionCalibrer_triggered();
 
 	public slots:
 		void setStatus(QString status);
