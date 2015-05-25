@@ -11,10 +11,13 @@
 //--------------------------------------------------------- Local includes
 #include "MapDiscoverer.hpp"
 
+static uint16_t const DEFAULT_RES = 10;
+
 //------------------------------------------------ Constructors/Destructor
 
-MapDiscoverer::MapDiscoverer()
+MapDiscoverer::MapDiscoverer():_resolution(DEFAULT_RES)
 {
+    pthread_mutex_init(&_mutexActions, NULL);
 }
 
 MapDiscoverer::~MapDiscoverer()
@@ -27,6 +30,7 @@ MapDiscoverer::~MapDiscoverer()
     {
         pthread_join(pthread, NULL);
     }
+    pthread_mutex_destroy(&_mutexActions);
 }
 
 //--------------------------------------------------------- Public methods
@@ -45,6 +49,10 @@ void* MapDiscoverer::SpheroThread(void* sphero_ptr){
 	sphero->onPreSleep([sphero](){
 				sphero->ping();
 			});
+
+    sphero->onDisconnect([sphero](){
+                sphero->connect();
+            });
 
 	bool collision = false;
 
@@ -73,9 +81,129 @@ void* MapDiscoverer::SpheroThread(void* sphero_ptr){
         usleep(200000);
 	}
 
-	sphero->setColor(0, 0xff, 0);
+    sphero->setColor(0, 0xff, 0);
+
+    for(;;)
+    {
+        pthread_mutex_lock(&_mutexActions);
+        while(_actionList.empty())
+        {
+            pthread_cond_wait(&_listActionsCond, &_mutexActions);
+        }
+        DiscoverAction action = _actionList.front();
+        _actionList.pop_front();
+        pthread_mutex_unlock(&_mutexActions);
+        action.effectuer(sphero);
+    }
 
     return (void*) NULL;
 }
 
 //Private classes
+
+MapDiscoverer::OutlineExplore MapDiscoverer::OutlineExplore(coord_t base, orientation orientation,
+                                                            direction_t approche):
+    _origine(base), _orientation(orientation), _approche(approche)
+{
+}
+
+void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
+{
+    spherocoord_t x,y, xObj, yObj;
+    bool collision;
+    sphero->onCollision([xObj, yObj, x, y, collision](){
+                xObj = x;
+                yObj = y;
+                collision = true;
+            });
+    for(;;)
+    {
+        xObj = x = sphero->getX();
+        yObj = y = sphero->getY();
+
+        collision = false;
+
+        switch(direction)
+        {
+            case direction_t::NORTH:
+                yObj += resolution;
+                break;
+            case direction_t::SOUTH:
+                yObj -= resolution;
+                break;
+            case direction_t::EAST:
+                xObj += resolution;
+                break;
+            case direction_t::WEST:
+                xObj -= resolution;
+                break;
+        }
+
+        while(xObj != sphero->getX() )
+        {
+            if(xObj < sphero->getX())
+            {
+                sphero->roll(65, 270);
+            }
+            else
+            {
+                sphero->roll(65,90);
+            }
+        }
+
+        while(yObj != sphero->getY() )
+        {
+            if(yObj < sphero->getY())
+            {
+                sphero->roll(65, 180);
+            }
+            else
+            {
+                sphero->roll(65,0);
+            }
+        }
+
+        if(collision)
+        {
+            WorldMap.addOutlinePolygonPoint(coord_t(x/_resolution, y/_resolution))
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
