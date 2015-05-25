@@ -12,10 +12,28 @@ class CommandHandler;
 #include "CommandHandler.h"
 #include "BtScanner.h"
 #include "Joystick/JoystickPlayer.h"
+#include "Calibrator.h"
 
 namespace Ui {
 	class MainWindow;
 }
+
+struct posInfos{
+		int xPos;
+		int yPos;
+		int xSpd;
+		int ySpd;
+		int angle;
+
+		posInfos()
+		{
+			xPos = 0;
+			yPos = 0;
+			xSpd = 0;
+			ySpd = 0;
+			angle = -1;
+		}
+};
 
 class MainWindow : public QMainWindow
 {
@@ -33,6 +51,8 @@ class MainWindow : public QMainWindow
 
 		void updateConnexions(Sphero *sph);
 
+		posInfos getPosition();
+
 	private slots:
 		void on_sendBtn_3_clicked();
 
@@ -40,12 +60,15 @@ class MainWindow : public QMainWindow
 
 		void updateStatus();
 		void connectSphero(QString spheroInfos);
+		void calibrator(int angle, int posX, int posY);
 
 		void on_actionConnect_2_triggered();
 
 		void customContextMenuRequested(const QPoint &pos);
 
 		void on_spheroLst_itemDoubleClicked(QListWidgetItem *item);
+
+		void on_calibrateButton_clicked();
 
 	public slots:
 		void setStatus(QString status);
@@ -58,9 +81,14 @@ class MainWindow : public QMainWindow
 
 		CommandHandler *_ch;
 
+		Calibrator* _calibrator;
+
 		QMenu *_joystickList;
 		map<int, Sphero*> joystickBindings;
 		map<int, JoystickPlayer*> joystickAdaptorBindings;
+
+		posInfos _spheroPos;
+		QMutex _posMutex;
 
 		void commandAction();
 };
