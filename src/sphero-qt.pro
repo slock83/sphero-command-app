@@ -19,6 +19,7 @@ SOURCES += main.cpp\
 	HistoryLineEdit.cpp \
 	BtScanner.cpp \
 	MapDiscovery/Coord.cpp \
+	MapDiscovery/MapDiscoverer.cpp \
 	MapDiscovery/PointStruct.cpp \
 	MapDiscovery/WorldMap.cpp \
 	Joystick/JoystickAdaptor.cpp \
