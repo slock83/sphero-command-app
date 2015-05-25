@@ -1,5 +1,5 @@
 /*************************************************************************
-	WorldMap  -  
+	WorldMap  -
 							 -------------------
 	started                : 25/05/2015
 *************************************************************************/
@@ -37,17 +37,21 @@ class WorldMap
 
 		virtual ~WorldMap();
 
+		points_map_t getMap();
+
+		outline_set_t getOutline();
+
 
 		//------------------------------------------------ Public methods
 
 
 	private:
-	
+
 	// Contient l'association coordonnées <-> point_struct_t
 	// Chaque point_struct_t possède sa position, et des pointeurs
 	// vers chacun de ses voisins (si pas de voisin, nullptr)
 	points_map_t _points_map;
-	
+
 	// Contient les points qui forment le contour du graphe
 	// tous les points appartiennent à _points_map
 	outline_set_t _outline_set;

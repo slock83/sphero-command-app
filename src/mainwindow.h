@@ -11,6 +11,7 @@ using namespace std;
 class CommandHandler;
 #include "CommandHandler.h"
 #include "BtScanner.h"
+#include "Joystick/JoystickPlayer.h"
 
 namespace Ui {
 	class MainWindow;
@@ -59,6 +60,7 @@ class MainWindow : public QMainWindow
 
 		QMenu *_joystickList;
 		map<int, Sphero*> joystickBindings;
+		map<int, JoystickPlayer*> joystickAdaptorBindings;
 
 		void commandAction();
 };

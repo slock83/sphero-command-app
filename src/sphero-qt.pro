@@ -17,13 +17,23 @@ SOURCES += main.cpp\
 	CommandHandler.cpp \
 	SpheroManager.cpp \
 	HistoryLineEdit.cpp \
-	BtScanner.cpp
+	BtScanner.cpp \
+	MapDiscovery/Coord.cpp \
+	MapDiscovery/PointStruct.cpp \
+	Joystick/JoystickAdaptor.cpp \
+	Joystick/JoystickPlayer.cpp
 
 HEADERS  += mainwindow.h \
 	CommandHandler.h \
 	SpheroManager.h \
 	HistoryLineEdit.h \
-	BtScanner.h
+	BtScanner.h \
+	MapDiscovery/Coord.hpp \
+	MapDiscovery/MapDiscoverer.hpp \
+	MapDiscovery/PointStruct.hpp \
+	MapDiscovery/WorldMap.hpp \
+	Joystick/JoystickAdaptor.h \
+	Joystick/JoystickPlayer.h
 
 INCLUDEPATH +=
 
@@ -32,7 +42,7 @@ FORMS    += mainwindow.ui \
 
 CONFIG   += c++11
 
-unix:!macx: LIBS += -lsphero
+unix:!macx: LIBS += -lsphero -lpthread
 
 #INCLUDEPATH += $$PWD/../
 #DEPENDPATH += $$PWD/../

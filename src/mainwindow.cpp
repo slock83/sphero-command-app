@@ -21,6 +21,7 @@ using namespace std;
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "BtScanner.h"
+#include "Joystick/JoystickPlayer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -142,7 +143,11 @@ void MainWindow::updateConnexions(Sphero* sph)
 	for(pair<int, Sphero*> p : joystickBindings)
 	{
 		if(sph == p.second)
+		{
 			joystickBindings.erase(joystickBindings.find(p.first));
+			joystickAdaptorBindings.at(p.first)->stop();
+			joystickAdaptorBindings.erase(joystickAdaptorBindings.find(p.first));
+		}
 	}
 }
 
@@ -161,6 +166,7 @@ void MainWindow::on_commandLine_3_returnPressed()
 void MainWindow::updateStatus()
 {
 	ui->statusBar->showMessage(_status);
+	updateList();
 }
 
 void MainWindow::connectSphero(QString spheroInfos)
@@ -232,6 +238,8 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 		int index;
 		ss >> index;
 		joystickBindings[index] = _ch->getManager()->getSphero(text.toStdString());
+		joystickAdaptorBindings[index] = new JoystickPlayer(joystickBindings[index], index);
+		joystickAdaptorBindings[index]->start();
 	}
 }
 
