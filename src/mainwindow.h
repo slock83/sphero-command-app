@@ -44,8 +44,6 @@ class MainWindow : public QMainWindow
 
 		void customContextMenuRequested(const QPoint &pos);
 
-		//void on_spheroLst_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
 	public slots:
 		void setStatus(QString status);
 
