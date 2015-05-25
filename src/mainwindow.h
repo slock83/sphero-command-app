@@ -31,7 +31,7 @@ struct posInfos{
 			yPos = 0;
 			xSpd = 0;
 			ySpd = 0;
-			angle = -1;
+			angle = -361;
 		}
 };
 
@@ -68,7 +68,7 @@ class MainWindow : public QMainWindow
 
 		void on_spheroLst_itemDoubleClicked(QListWidgetItem *item);
 
-		void on_calibrateButton_clicked();
+		void on_actionCalibrer_triggered();
 
 	public slots:
 		void setStatus(QString status);
