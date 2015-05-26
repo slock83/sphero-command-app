@@ -90,7 +90,7 @@ class MapDiscoverer
 
 	
 
-	//list<DiscoverAction> _actionList;
+    list<DiscoverAction*> _actionList;
 	list<pthread_t> _listPthread;
     pthread_mutex_t _mutexActions;
     pthread_cond_t _listActionsCond;
