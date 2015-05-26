@@ -56,6 +56,9 @@ class MapDiscoverer
 	class DiscoverAction
 	{
 		public:
+
+			virtual ~DiscoverAction();
+
 			virtual void effectuer(Sphero* sphero) = 0;
 	};
 
