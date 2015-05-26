@@ -265,14 +265,14 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	else if(chosenAction == discoverAction)
 	{
 		Sphero *sph = _ch->getManager()->getSphero(text.toStdString());
-		//_mapDisc->addSphero(_ch->getManager()->getSphero(text.toStdString()));
-		sph->enableCollisionDetection(80, 20, 80, 20, 80);
+		_mapDisc->addSphero(sph);
+		/*sph->enableCollisionDetection(80, 20, 80, 20, 80);
 		sph->onCollision([this, sph](CollisionStruct* cs){
 			/*sphero->roll(0,0);
 			sphero->setColor(0xff, 0, 0);
-			collision = true;*/
+			collision = true;
 			_map->addPoint(coord_t(sph->getX(), sph->getY()));
-		});
+		});*/
 	}
 	else if(actionText.startsWith("Manette"))
 	{
