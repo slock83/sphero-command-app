@@ -190,27 +190,32 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 
 }
 
-MapDiscoverer::ExploreLine::ExploreLine(coord_t base, direction_t sens):_origine(base), _sens(sens)
+MapDiscoverer::ExploreLine::ExploreLine(coord_t base,orientation orient, direction_t sens, MapDiscoverer* discoverer):_origine(base),_orient(orient), _sens(sens), _disc(discoverer)
 {
 }
 
 void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
 {
+
+    int angle;
 	switch (_sens)
 	{
 		case NORTH:
-			sphero->roll(45, 0);
+            angle = 0;
 			break;
 		case SOUTH:
-			sphero->roll(45, 180);
+            angle = 180;
 			break;
 		case EAST:
-			sphero->roll(45,90);
+            angle = 90;
 			break;
 		case WEST:
-			sphero->roll(45,270);
+            angle = 270;
 			break;
 	}
+
+    do
+    {
 
         coord_t dest = getLimitPoint(_origine, angle);
         sphero->rollToPosition(dest.x, dest.y);
@@ -221,7 +226,7 @@ void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
             MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::TRIGO, _disc);
             else MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::HORAIRE, _disc);
         }
-    }while();
+    }while(true);
 
 
 	sphero->roll(0, 0);
