@@ -14,8 +14,10 @@ class MapViewer : public QWidget
 		Q_OBJECT
 
 	public:
-		explicit MapViewer(WorldMap* map, QWidget *parent = 0);
+		explicit MapViewer(QWidget *parent = 0);
 		~MapViewer();
+
+		void setMap(WorldMap* map);
 
 	private:
 		Ui::MapViewer *ui;

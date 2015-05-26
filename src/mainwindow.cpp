@@ -24,6 +24,7 @@ using namespace std;
 #include "MapDiscovery/MapDiscoverer.hpp"
 #include "Joystick/JoystickPlayer.h"
 #include "Calibrator.h"
+#include "MapDiscovery/WorldMap.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	_ch = new CommandHandler(this);
 	_btScan = new BtScanner(this);
+	_about = new About(this);
 
 	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)));
 	QObject::connect(_btScan, SIGNAL(requestConnection(QString)), this, SLOT(connectSphero(QString)));
@@ -44,6 +46,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	timer->start(100);
 
 	_joystickList = new QMenu("Connect joystick");
+
+	_map = new WorldMap();
+	_mapDisc = new MapDiscoverer(_map);
+
+	ui->map->setMap(_map);
 }
 
 MainWindow::~MainWindow()
@@ -61,7 +68,7 @@ void MainWindow::updateList()
 		QListWidgetItem *cwi = ui->spheroLst->currentItem();
 
 		string selected = (cwi == NULL) ? "" : cwi->text().toStdString();
-		int newIndex = _ch->getManager()->getSpheroIndex(selected);
+		int newIndex = ui->spheroLst->currentRow();
 		int sel = _ch->getManager()->getSelectedIndex();
 		_ch->lockListUpdate(false);
 
@@ -71,8 +78,7 @@ void MainWindow::updateList()
 			ui->spheroLst->addItem(QString::fromStdString(name));
 		}
 
-		if(newIndex >= 0 && ui->spheroLst->count() > 0)
-			ui->spheroLst->item(newIndex)->setSelected(true);
+
 
 		QListWidgetItem *wi = ui->spheroLst->item(sel);
 		if(wi != NULL)
@@ -81,6 +87,10 @@ void MainWindow::updateList()
 			font.setBold(true);
 			wi->setFont(font);
 		}
+
+		if(newIndex >= 0)
+			ui->spheroLst->setCurrentRow(newIndex);
+
 
 	}
 }
@@ -105,9 +115,9 @@ void MainWindow::updateJoysticks()
 	{
 		for(int i = 0; i < nbJoysticks; ++i)
 		{
-			int nb;
-			jsList >> nb;
-			jsIndexs[i] = nb;
+			//int nb;
+			//jsList >> nb;
+			jsIndexs[i] = i;
 		}
 		jsList.close();
 	}
@@ -224,7 +234,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	QAction *discJsAction = menu.addAction("Déconnecter les manettes");
 	menu.addSeparator();
 	QAction *streamAction = menu.addAction("Voir les infos de position");
-    QAction *discoverAction = menu.addAction("Rejoindre Dora");
+	QAction *discoverAction = menu.addAction("Rejoindre Dora");
 	menu.addMenu(_joystickList);
 
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
@@ -256,11 +266,18 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	{
 		updateConnexions(_ch->getManager()->getSphero(text.toStdString()));
 	}
-    else if(chosenAction == discoverAction)
-    {
-        MapDiscoverer *map = new MapDiscoverer;
-        map->addSphero(_ch->getManager()->getSphero(text.toStdString()));
-    }
+	else if(chosenAction == discoverAction)
+	{
+		Sphero *sph = _ch->getManager()->getSphero(text.toStdString());
+		//_mapDisc->addSphero(_ch->getManager()->getSphero(text.toStdString()));
+		sph->enableCollisionDetection(80, 20, 80, 20, 80);
+		sph->onCollision([this, sph](CollisionStruct* cs){
+			/*sphero->roll(0,0);
+			sphero->setColor(0xff, 0, 0);
+			collision = true;*/
+			_map->addPoint(coord_t(sph->getX(), sph->getY()));
+		});
+	}
 	else if(actionText.startsWith("Manette"))
 	{
 		stringstream ss("");
@@ -290,4 +307,15 @@ void MainWindow::on_actionCalibrer_triggered()
 	_calibrator = new Calibrator(_ch->getManager()->getSphero(), infos.xPos, infos.yPos, infos.angle, this);
 	_calibrator->setModal(true);
 	_calibrator->show();
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+	exit(0);
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+	_about->setModal(true);
+	_about->show();
 }

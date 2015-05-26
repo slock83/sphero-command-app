@@ -2,9 +2,13 @@
 #include "ui_MapViewer.h"
 
 #include <QPainter>
+#include <QTimer>
+#include <map>
 
-MapViewer::MapViewer(WorldMap *map, QWidget *parent) :
-	QWidget(parent), _map(map),
+using namespace std;
+
+MapViewer::MapViewer(QWidget *parent) :
+	QWidget(parent), _map(NULL),
 	ui(new Ui::MapViewer)
 {
 	ui->setupUi(this);
@@ -18,8 +22,22 @@ MapViewer::~MapViewer()
 	delete ui;
 }
 
+void MapViewer::setMap(WorldMap *map)
+{
+	_map = map;
+}
+
 void MapViewer::paintEvent(QPaintEvent *event)
 {
+
+	//QPainter painter(this);
+	/*QColor color(255, 255, 255);
+	painter.setBrush(color);
+
+
+
+	if(map == NULL)
+		return;*/
 	int xmin(0), ymin(0), xmax(0), ymax(0);
 	for(pair<coord_t, point_struct_t*> c : _map->getMap())
 	{
@@ -39,7 +57,9 @@ void MapViewer::paintEvent(QPaintEvent *event)
 
 	QPainter painter(this);
 	painter.translate(-xmin, -ymin);
-	painter.scale(width()/(1.0*(xmax-xmin)), height()/(1.0*(ymax-ymin)));
+
+	if(xmax != xmin && ymax != ymin)
+		painter.scale(width()/(1.0*(xmax-xmin)), height()/(1.0*(ymax-ymin)));
 
 	QColor c(0, 0, 0);
 
