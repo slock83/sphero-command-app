@@ -53,11 +53,11 @@ class MapDiscoverer
 
 		WorldMap *_world_map;
 
-	/*class DiscoverAction
+    class DiscoverAction
 	{
 		protected:
 			virtual void effectuer(Sphero* sphero) = 0;
-	}
+    };
 
 	class ExploreLine : public DiscoverAction
 	{
@@ -65,30 +65,36 @@ class MapDiscoverer
 			ExploreLine(coord_t base, direction_t sens);
 
 		protected:
-			final virtual effectuer(Sphero* sphero);
+            virtual void effectuer(Sphero* sphero) = 0;
 
 		private:
 			coord_t _origine;
 			direction_t _sens;
-	}
+    };
 
 	class OutlineExplore : public DiscoverAction
 	{
 		public:
-			OutlineExplore(coord_t base, orientation orientation);
+            OutlineExplore(coord_t base, orientation orientation, direction_t approche);
 
 		protected:
-			final virtual effectuer(sphero);
+            virtual void effectuer(Sphero* sphero);
 
 		private:
 			coord_t _origine;
 			orientation _orientation;
-	}
+            direction_t _approche;
+    };
 
-	*/
+
+
+	
 
 	//list<DiscoverAction> _actionList;
 	list<pthread_t> _listPthread;
+    pthread_mutex_t _mutexActions;
+    pthread_cond_t _listActionsCond;
+    uint16_t _resolution;
 };
 
 #endif // MAP_DISCOVERER_HPP
