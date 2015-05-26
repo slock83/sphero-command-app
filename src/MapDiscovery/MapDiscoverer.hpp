@@ -65,7 +65,7 @@ class MapDiscoverer
 	class ExploreLine : public DiscoverAction
 	{
 		public:
-			ExploreLine(coord_t base, direction_t sens);
+            ExploreLine(coord_t base, orientation orient, direction_t sens, MapDiscoverer* discoverer);
 
 		public:
 			virtual void effectuer(Sphero* sphero) = 0;
@@ -73,6 +73,9 @@ class MapDiscoverer
 		private:
 			coord_t _origine;
 			direction_t _sens;
+            orientation _orient;
+
+            MapDiscoverer* _disc;
 	};
 
 	class OutlineExplore : public DiscoverAction
