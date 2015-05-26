@@ -80,12 +80,12 @@ void* MapDiscoverer::SpheroThread(void* init){
 	sphero->enableCollisionDetection(60, 20, 60, 20, 60);
 
 	sphero->roll(60, 270);
-	usleep(200000);
+	usleep(2000000);
 
 	sphero->setColor(0, 0xff, 0);
 
 	sphero->roll(60, 180);
-	usleep(200000);
+	usleep(2000000);
 	sphero->setColor(0, 0xff, 0);
 
 	for(;;)
@@ -195,25 +195,25 @@ MapDiscoverer::ExploreLine::ExploreLine(coord_t base, direction_t sens):_origine
 
 void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
 {
-    switch (_sens)
-    {
-        case NORTH:
-            sphero->roll(45, 0);
-            break;
-        case SOUTH:
-            sphero->roll(45, 180);
-            break;
-        case EAST:
-            sphero->roll(45,90);
-            brak;
-        case WEST:
-            sphero->roll(45,270);
-            break;
-    }
+	switch (_sens)
+	{
+		case NORTH:
+			sphero->roll(45, 0);
+			break;
+		case SOUTH:
+			sphero->roll(45, 180);
+			break;
+		case EAST:
+			sphero->roll(45,90);
+			break;
+		case WEST:
+			sphero->roll(45,270);
+			break;
+	}
 
 
 
-    sphero->roll(0, 0);
+	sphero->roll(0, 0);
 }
 
 
@@ -245,4 +245,4 @@ void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
 
 
 
-	
+
