@@ -216,32 +216,5 @@ void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+MapDiscoverer::DiscoverAction::~DiscoverAction()
+{}
