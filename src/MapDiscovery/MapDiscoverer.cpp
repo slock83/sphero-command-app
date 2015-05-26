@@ -54,7 +54,7 @@ void* MapDiscoverer::SpheroThread(void* sphero_ptr){
 
 	bool collision = false;
 
-	sphero->onCollision([&sphero, &collision](CollisionStruct* cs){
+	sphero->onCollision([&sphero, &collision](CollisionStruct*){
 				sphero->roll(0,0);
 				sphero->setColor(0xff, 0, 0);
 				collision = true;

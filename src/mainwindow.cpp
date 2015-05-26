@@ -90,8 +90,6 @@ void MainWindow::updateList()
 
 		if(newIndex >= 0)
 			ui->spheroLst->setCurrentRow(newIndex);
-
-
 	}
 }
 
@@ -115,8 +113,6 @@ void MainWindow::updateJoysticks()
 	{
 		for(int i = 0; i < nbJoysticks; ++i)
 		{
-			//int nb;
-			//jsList >> nb;
 			jsIndexs[i] = i;
 		}
 		jsList.close();
@@ -292,6 +288,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 
 void MainWindow::on_spheroLst_itemDoubleClicked(QListWidgetItem *item)
 {
+	qDebug() << "coin";
 	int index = _ch->getManager()->getSpheroIndex(item->text().toStdString());
 	_ch->getManager()->selectSphero(index);
 	setStatus(QString("Selecting Sphero %1").arg(item->text()));
