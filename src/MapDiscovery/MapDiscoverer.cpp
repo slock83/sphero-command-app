@@ -11,10 +11,9 @@
 //--------------------------------------------------------- Local includes
 #include "MapDiscoverer.hpp"
 
-static uint16_t const DEFAULT_RES = 10;
-
 //------------------------------------------------ Constructors/Destructor
 
+uint16_t MapDiscoverer::_resolution = 10;
 
 struct initializer{
 		MapDiscoverer* disc;
@@ -22,190 +21,170 @@ struct initializer{
 };
 
 
-MapDiscoverer::MapDiscoverer(WorldMap *map) : _world_map(map),_resolution(DEFAULT_RES)
+MapDiscoverer::MapDiscoverer(WorldMap *map) : _world_map(map)
 {
-    pthread_mutex_init(&_mutexActions, NULL);
+	pthread_mutex_init(&_mutexActions, NULL);
 }
 
 MapDiscoverer::~MapDiscoverer()
 {
-    for(pthread_t pthread: _listPthread)
-    {
-        pthread_cancel(pthread);
-    }
-    for(pthread_t pthread : _listPthread)
-    {
-        pthread_join(pthread, NULL);
-    }
-    pthread_mutex_destroy(&_mutexActions);
+	for(pthread_t pthread: _listPthread)
+	{
+		pthread_cancel(pthread);
+	}
+	for(pthread_t pthread : _listPthread)
+	{
+		pthread_join(pthread, NULL);
+	}
+	pthread_mutex_destroy(&_mutexActions);
 }
 
 //--------------------------------------------------------- Public methods
 void MapDiscoverer::addSphero(Sphero* sphero)
 {
 	pthread_t threadId;
-	pthread_create(&threadId, NULL, SpheroThread, (void*) sphero);
+
+	initializer init;
+	init.disc = this;
+	init.sph = sphero;
+
+	pthread_create(&threadId, NULL, SpheroThread, (void*)&init);
 	_listPthread.push_back(threadId);
 }
 
 //-------------------------------------------------------- Private methods
-void* MapDiscoverer::SpheroThread(void* sphero_ptr){
+void* MapDiscoverer::SpheroThread(void* init){
 
 	//--- Sphero Init ---//
-	Sphero* sphero = (Sphero*) sphero_ptr;
+	initializer* _init = (initializer*) init;
+	Sphero* sphero = _init->sph;
+	MapDiscoverer* disc = _init->disc;
+
 	sphero->onPreSleep([sphero](){
 				sphero->ping();
 			});
 
-    sphero->onDisconnect([sphero](){
-                sphero->connect();
-            });
+	sphero->onDisconnect([sphero](){
+				sphero->connect();
+			});
 
 	bool collision = false;
 
-	sphero->onCollision([&sphero, &collision](CollisionStruct* cs){
+	sphero->onCollision([&sphero](CollisionStruct*){
 				sphero->roll(0,0);
 				sphero->setColor(0xff, 0, 0);
-				collision = true;
 				//_world_map->addPoint(coord_t(cs->impact_component_x, cs->impact_component_y));
 			});
 
-	sphero->enableCollisionDetection(80, 20, 80, 20, 80);
+	sphero->enableCollisionDetection(60, 20, 60, 20, 60);
+
+	sphero->roll(60, 270);
+	usleep(200000);
 
 	sphero->setColor(0, 0xff, 0);
 
-	while(!collision)
-	{
-		sphero->roll(60, 180);
-		usleep(200000);
-	}
-	usleep(500000);
+	sphero->roll(60, 180);
+	usleep(200000);
 	sphero->setColor(0, 0xff, 0);
 
-	collision = false;
-	while(!collision)
+	for(;;)
 	{
-		sphero->roll(60, 270);
-		usleep(200000);
+		pthread_mutex_lock(&disc->_mutexActions);
+		while(disc->_actionList.empty())
+		{
+			pthread_cond_wait(&disc->_listActionsCond, &disc->_mutexActions);
+		}
+		DiscoverAction* action = disc->_actionList.front();
+		disc->_actionList.pop_front();
+		pthread_mutex_unlock(&(disc->_mutexActions));
+		action->effectuer(sphero);
+		delete action;
 	}
-
-    sphero->setColor(0, 0xff, 0);
-
-    for(;;)
-    {
-        pthread_mutex_lock(&_mutexActions);
-        while(_actionList.empty())
-        {
-            pthread_cond_wait(&_listActionsCond, &_mutexActions);
-        }
-        DiscoverAction action = _actionList.front();
-        _actionList.pop_front();
-        pthread_mutex_unlock(&_mutexActions);
-        action.effectuer(sphero);
-    }
 
 	return (void*) NULL;
 }
 
 //Private classes
 
-MapDiscoverer::OutlineExplore MapDiscoverer::OutlineExplore(coord_t base, orientation orientation,
-                                                            direction_t approche):
-    _origine(base), _orientation(orientation), _approche(approche)
+MapDiscoverer::OutlineExplore::OutlineExplore(coord_t base, orientation orient,
+															direction_t approche, MapDiscoverer* discoverer):
+	_origine(base), _orientation(orient), _approche(approche), _disc(discoverer)
 {
 }
 
 void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 {
-    spherocoord_t x,y, xObj, yObj;
-    bool collision;
 
-    sphero->onCollision([xObj, yObj, x, y, collision](){
-                xObj = x;
-                yObj = y;
-                collision = true;
-            });
+	int16_t lastX, lastY;
+	int16_t direction = 0;
 
-    uint16_t angle;
-    switch(_approche)
-    {
-        case direction_t::NORTH:
-            angle = 0;
-            break;
-        case direction_t::SOUTH:
-            angle = 180;
-            break;
-        case direction_t::EAST:
-            angle = 90;
-            break;
-        case direction_t::WEST:
-            angle = 270;
-            break;
-    }
+	switch(_approche)
+	{
+		case NORTH:
+			direction = 0;
+			break;
+		case SOUTH:
+			direction = 180;
+			break;
+		case EAST:
+			direction = 90;
+			break;
+		case WEST:
+			direction = 270;
+			break;
+	}
 
+	for(;;)
+	{
+		lastX = sphero->getX();
+		lastY = sphero->getY();
 
-    for(;;)
-    {
-        xObj = x = sphero->getX();
-        yObj = y = sphero->getY();
+		switch (direction)
+		{
+			case 0:
+				sphero->rollToPosition(lastX, lastY+5);
+				break;
+			case 180:
+				sphero->rollToPosition(lastX, lastY-5);
+				break;
+			case 90:
+				sphero->rollToPosition(lastX+5, lastY);
+				break;
+			case 270:
+				sphero->rollToPosition(lastX-5, lastY);
+				break;
+		}
 
-        collision = false;
+		if(sphero->getCollision())
+		{
+			// On revient à la position initiale
+			sphero->rollToPosition(lastX, lastY);
 
-        switch(angle)
-        {
-            case 0:
-                yObj += resolution;
-                break;
-            case 180:
-                yObj -= resolution;
-                break;
-            case 90:
-                xObj += resolution;
-                break;
-            case 270:
-                xObj -= resolution;
-                break;
-        }
+			if(!_disc->_world_map->addOutlinePolygonPoint(coord_t(lastX, lastY)))
+			{
+				// On est retombé sur un point déjà visité
+				return;
+			}
 
-        while(xObj != sphero->getX() )
-        {
-            if(xObj < sphero->getX())
-            {
-                sphero->roll(65, 270);
-            }
-            else
-            {
-                sphero->roll(65,90);
-            }
-        }
+			// Si on tourne dans le sens
+			// horaire -> -90
+			// trigo -> 90
 
-        while(yObj != sphero->getY() )
-        {
-            if(yObj < sphero->getY())
-            {
-                sphero->roll(65, 180);
-            }
-            else
-            {
-                sphero->roll(65,0);
-            }
-        }
+			direction = (_orientation == orientation::HORAIRE) ?
+						(direction + 270) % 360 : (direction + 90) % 360;
+		}
+		else
+		{
+			direction = (_orientation == orientation::HORAIRE) ?
+						(direction + 90) % 360 : (direction + 270) % 360;
+		}
 
-        uint16_t ajout;
-
-        if(collision)
-        {
-            if(WorldMap.addOutlinePolygonPoint(coord_t(x/_resolution, y/_resolution)))
-                return;
-            ajout = (_orientation == orientation::TRIGO) ? 90 : 270;
-        }
-        else
-        {
-            ajout = (_orientation == orientation::TRIGO) ? 270 : 90;
-        }
-
-        angle = (angle + ajout)%360;
-    }
+		if(_disc->_world_map->existsOulinePolygonPoint(coord_t(lastX, lastY)))
+		{
+			// On est aussi retombé sur un point déjà visité
+			return;
+		}
+	}
 
 }
 
@@ -265,6 +244,4 @@ void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
 
 
 
-
-
-
+	

@@ -90,8 +90,6 @@ void MainWindow::updateList()
 
 		if(newIndex >= 0)
 			ui->spheroLst->setCurrentRow(newIndex);
-
-
 	}
 }
 
@@ -115,8 +113,6 @@ void MainWindow::updateJoysticks()
 	{
 		for(int i = 0; i < nbJoysticks; ++i)
 		{
-			//int nb;
-			//jsList >> nb;
 			jsIndexs[i] = i;
 		}
 		jsList.close();
@@ -269,14 +265,14 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	else if(chosenAction == discoverAction)
 	{
 		Sphero *sph = _ch->getManager()->getSphero(text.toStdString());
-		//_mapDisc->addSphero(_ch->getManager()->getSphero(text.toStdString()));
-		sph->enableCollisionDetection(80, 20, 80, 20, 80);
+		_mapDisc->addSphero(sph);
+		/*sph->enableCollisionDetection(80, 20, 80, 20, 80);
 		sph->onCollision([this, sph](CollisionStruct* cs){
-			/*sphero->roll(0,0);
+			sphero->roll(0,0);
 			sphero->setColor(0xff, 0, 0);
-			collision = true;*/
+			collision = true;
 			_map->addPoint(coord_t(sph->getX(), sph->getY()));
-		});
+		});*/
 	}
 	else if(actionText.startsWith("Manette"))
 	{
@@ -292,6 +288,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 
 void MainWindow::on_spheroLst_itemDoubleClicked(QListWidgetItem *item)
 {
+	qDebug() << "coin";
 	int index = _ch->getManager()->getSpheroIndex(item->text().toStdString());
 	_ch->getManager()->selectSphero(index);
 	setStatus(QString("Selecting Sphero %1").arg(item->text()));
