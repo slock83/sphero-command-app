@@ -28,7 +28,7 @@ void JoystickPlayer::run()
 	lastEvent.type = NONE;
 
 	int lastAngle = 0;
-	int speed = 50;
+	int _SPEED = 100;
 	bool isBackLedEnabled(false);
 
 	while(_run)
@@ -41,37 +41,36 @@ void JoystickPlayer::run()
 		{
 			if(ev.buttonType == AXIS_X)
 			{
-				qDebug() << "X " << ev.value;
 				if(ev.value < deadZone && ev.value > -deadZone)
 				{
 					played->roll(0, lastAngle, 1);
+					ev.type = NONE;
 				}
 				else if(ev.value > 0)
 				{
-					played->roll(ev.value, 90, 1);
+					played->roll((uint8_t)_SPEED % 256 * (ev.value / 127), 90, 1);
 					lastAngle = 90;
 				}
 				else
 				{
-					played->roll(ev.value, 270, 1);
+					played->roll((uint8_t)_SPEED % 256 * (ev.value / 127), 270, 1);
 					lastAngle = 270;
 				}
 			}
 			else if (ev.buttonType == AXIS_Y)
 			{
-				qDebug() << "Y " << ev.value;
 				if(ev.value < deadZone && ev.value > -deadZone)
 				{
 					played->roll(0, lastAngle, 1);
 				}
 				else if(ev.value < 0)
 				{
-					played->roll(ev.value, 0, 1);
+					played->roll((uint8_t)_SPEED % 256 * (ev.value / 127), 0, 1);
 					lastAngle = 0;
 				}
 				else
 				{
-					played->roll(ev.value, 180, 1);
+					played->roll((uint8_t)_SPEED % 256 * (ev.value / 127), 180, 1);
 					lastAngle = 180;
 				}
 			}
@@ -135,7 +134,7 @@ void JoystickPlayer::run()
 			}
 		}
 		lastEvent = ev;
-		usleep(10000);
+		usleep(8000);
 	}
 }
 

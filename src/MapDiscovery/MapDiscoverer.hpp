@@ -1,5 +1,5 @@
 /*************************************************************************
-	MapDiscoverer  -  
+	MapDiscoverer  -
 							 -------------------
 	started                : 25/05/2015
 *************************************************************************/
@@ -32,7 +32,7 @@ class MapDiscoverer
 
 		//--------------------------------------- Constructors/Destructor
 
-		MapDiscoverer();
+		MapDiscoverer(WorldMap *map);
 
 		MapDiscoverer(const MapDiscoverer&) = delete;
 
@@ -47,11 +47,11 @@ class MapDiscoverer
 		void addSphero(Sphero* sphero);
 
 	private:
-	
-        static void* SpheroThread(void* sphero_ptr);
-		
-		
-		WorldMap _world_map;
+
+		static void* SpheroThread(void* sphero_ptr);
+
+
+		WorldMap *_world_map;
 
 	/*class DiscoverAction
 	{
@@ -63,7 +63,7 @@ class MapDiscoverer
 	{
 		public:
 			ExploreLine(coord_t base, direction_t sens);
-			
+
 		protected:
 			final virtual effectuer(Sphero* sphero);
 
@@ -84,10 +84,10 @@ class MapDiscoverer
 			coord_t _origine;
 			orientation _orientation;
 	}
-	
+
 	*/
 
-    //list<DiscoverAction> _actionList;
+	//list<DiscoverAction> _actionList;
 	list<pthread_t> _listPthread;
 };
 

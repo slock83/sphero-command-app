@@ -13,6 +13,8 @@ class CommandHandler;
 #include "BtScanner.h"
 #include "Joystick/JoystickPlayer.h"
 #include "Calibrator.h"
+#include "MapDiscovery/WorldMap.hpp"
+#include "MapDiscovery/MapDiscoverer.hpp"
 
 namespace Ui {
 	class MainWindow;
@@ -89,6 +91,9 @@ class MainWindow : public QMainWindow
 
 		posInfos _spheroPos;
 		QMutex _posMutex;
+
+		WorldMap* _map;
+		MapDiscoverer* _mapDisc;
 
 		void commandAction();
 };

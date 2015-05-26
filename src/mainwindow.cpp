@@ -24,6 +24,7 @@ using namespace std;
 #include "MapDiscovery/MapDiscoverer.hpp"
 #include "Joystick/JoystickPlayer.h"
 #include "Calibrator.h"
+#include "MapDiscovery/WorldMap.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -44,6 +45,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	timer->start(100);
 
 	_joystickList = new QMenu("Connect joystick");
+
+	_map = new WorldMap();
+	_mapDisc = new MapDiscoverer(_map);
+
+	ui->map->setMap(_map);
 }
 
 MainWindow::~MainWindow()
@@ -224,7 +230,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	QAction *discJsAction = menu.addAction("Déconnecter les manettes");
 	menu.addSeparator();
 	QAction *streamAction = menu.addAction("Voir les infos de position");
-    QAction *discoverAction = menu.addAction("Rejoindre Dora");
+	QAction *discoverAction = menu.addAction("Rejoindre Dora");
 	menu.addMenu(_joystickList);
 
 	QAction *chosenAction = menu.exec(ui->spheroLst->viewport()->mapToGlobal(pos));
@@ -256,11 +262,17 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 	{
 		updateConnexions(_ch->getManager()->getSphero(text.toStdString()));
 	}
-    else if(chosenAction == discoverAction)
-    {
-        MapDiscoverer *map = new MapDiscoverer;
-        map->addSphero(_ch->getManager()->getSphero(text.toStdString()));
-    }
+	else if(chosenAction == discoverAction)
+	{
+		//_mapDisc->addSphero(_ch->getManager()->getSphero(text.toStdString()));
+		_ch->getManager()->getSphero(text.toStdString())->enableCollisionDetection(80, 20, 80, 20, 80);
+		_ch->getManager()->getSphero(text.toStdString())->onCollision([this](CollisionStruct* cs){
+			/*sphero->roll(0,0);
+			sphero->setColor(0xff, 0, 0);
+			collision = true;*/
+			_map->addPoint(coord_t(cs->impact_component_x, cs->impact_component_y));
+		});
+	}
 	else if(actionText.startsWith("Manette"))
 	{
 		stringstream ss("");
