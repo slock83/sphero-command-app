@@ -115,6 +115,7 @@ MapDiscoverer::OutlineExplore::OutlineExplore(coord_t base, orientation orient,
 
 void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 {
+
 	int16_t lastX, lastY;
 	int16_t direction = 0;
 
@@ -187,3 +188,61 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 	}
 
 }
+
+MapDiscoverer::ExploreLine::ExploreLine(coord_t base, direction_t sens):_origine(base), _sens(sens)
+{
+}
+
+void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
+{
+    switch (_sens)
+    {
+        case NORTH:
+            sphero->roll(45, 0);
+            break;
+        case SOUTH:
+            sphero->roll(45, 180);
+            break;
+        case EAST:
+            sphero->roll(45,90);
+            brak;
+        case WEST:
+            sphero->roll(45,270);
+            break;
+    }
+
+
+
+    sphero->roll(0, 0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
