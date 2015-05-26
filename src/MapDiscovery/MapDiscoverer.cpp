@@ -68,8 +68,6 @@ void* MapDiscoverer::SpheroThread(void* init){
 				sphero->connect();
 			});
 
-	bool collision = false;
-
 	sphero->onCollision([&sphero](CollisionStruct*){
 				sphero->roll(0,0);
 				sphero->setColor(0xff, 0, 0);

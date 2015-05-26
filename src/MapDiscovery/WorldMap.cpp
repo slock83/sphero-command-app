@@ -50,6 +50,8 @@ bool WorldMap::addOutlinePolygonPoint(coord_t const& point)
 	// On recherche si le point en question est voisin d'une tête
 	// ou d'une queue de polygone déjà existant
 
+    isFront1 = isFront2 = false;
+
 	for(polygon_t* polygon : _polygons_set)
 	{
 		if(point_struct->isNeighbour(polygon->front()))
