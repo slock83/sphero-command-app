@@ -25,6 +25,7 @@ struct initializer{
 MapDiscoverer::MapDiscoverer(WorldMap *map) : _world_map(map)
 {
 	pthread_mutex_init(&_mutexActions, NULL);
+    _actionList.push_back(new OutlineExplore(coord_t(0,0),orientation::TRIGO, direction_t::WEST, this));
 }
 
 MapDiscoverer::~MapDiscoverer()
