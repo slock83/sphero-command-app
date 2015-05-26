@@ -111,11 +111,31 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 {
     spherocoord_t x,y, xObj, yObj;
     bool collision;
+
     sphero->onCollision([xObj, yObj, x, y, collision](){
                 xObj = x;
                 yObj = y;
                 collision = true;
             });
+
+    uint16_t angle;
+    switch(_approche)
+    {
+        case direction_t::NORTH:
+            angle = 0;
+            break;
+        case direction_t::SOUTH:
+            angle = 180;
+            break;
+        case direction_t::EAST:
+            angle = 90;
+            break;
+        case direction_t::WEST:
+            angle = 270;
+            break;
+    }
+
+
     for(;;)
     {
         xObj = x = sphero->getX();
@@ -123,18 +143,18 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 
         collision = false;
 
-        switch(direction)
+        switch(angle)
         {
-            case direction_t::NORTH:
+            case 0:
                 yObj += resolution;
                 break;
-            case direction_t::SOUTH:
+            case 180:
                 yObj -= resolution;
                 break;
-            case direction_t::EAST:
+            case 90:
                 xObj += resolution;
                 break;
-            case direction_t::WEST:
+            case 270:
                 xObj -= resolution;
                 break;
         }
@@ -163,11 +183,20 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
             }
         }
 
+        uint16_t ajout;
+
         if(collision)
         {
-            WorldMap.addOutlinePolygonPoint(coord_t(x/_resolution, y/_resolution))
+            if(WorldMap.addOutlinePolygonPoint(coord_t(x/_resolution, y/_resolution)))
+                return;
+            ajout = (_orientation == orientation::TRIGO) ? 90 : 270;
+        }
+        else
+        {
+            ajout = (_orientation == orientation::TRIGO) ? 270 : 90;
         }
 
+        angle = (angle + ajout)%360;
     }
 
 }
