@@ -7,6 +7,7 @@
 //-------------------------------------------------------- System includes
 #include <sphero/Sphero.hpp>
 #include <unistd.h>
+#include <QDebug>
 
 //--------------------------------------------------------- Local includes
 #include "MapDiscoverer.hpp"
@@ -44,11 +45,10 @@ void MapDiscoverer::addSphero(Sphero* sphero)
 {
 	pthread_t threadId;
 
-	initializer init;
-	init.disc = this;
-	init.sph = sphero;
-
-	pthread_create(&threadId, NULL, SpheroThread, (void*)&init);
+	initializer *init = new initializer();
+	init->disc = this;
+	init->sph = sphero;
+	pthread_create(&threadId, NULL, SpheroThread, (void*)init);
 	_listPthread.push_back(threadId);
 }
 
@@ -73,6 +73,7 @@ void* MapDiscoverer::SpheroThread(void* init){
 	sphero->onCollision([&sphero](CollisionStruct*){
 				sphero->roll(0,0);
 				sphero->setColor(0xff, 0, 0);
+				qDebug() << "Collision";
 				//_world_map->addPoint(coord_t(cs->impact_component_x, cs->impact_component_y));
 			});
 
