@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	_ch = new CommandHandler(this);
 	_btScan = new BtScanner(this);
+    _about = new About(this);
 
 	QObject::connect(_ch, SIGNAL(requestStatusBarUpdate(QString)), this, SLOT(setStatus(QString)));
 	QObject::connect(_btScan, SIGNAL(requestConnection(QString)), this, SLOT(connectSphero(QString)));
@@ -302,4 +303,15 @@ void MainWindow::on_actionCalibrer_triggered()
 	_calibrator = new Calibrator(_ch->getManager()->getSphero(), infos.xPos, infos.yPos, infos.angle, this);
 	_calibrator->setModal(true);
 	_calibrator->show();
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    exit(0);
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    _about->setModal(true);
+    _about->show();
 }

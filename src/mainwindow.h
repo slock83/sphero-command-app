@@ -11,10 +11,12 @@ using namespace std;
 class CommandHandler;
 #include "CommandHandler.h"
 #include "BtScanner.h"
+#include "about.h"
 #include "Joystick/JoystickPlayer.h"
 #include "Calibrator.h"
 #include "MapDiscovery/WorldMap.hpp"
 #include "MapDiscovery/MapDiscoverer.hpp"
+
 
 namespace Ui {
 	class MainWindow;
@@ -72,13 +74,18 @@ class MainWindow : public QMainWindow
 
 		void on_actionCalibrer_triggered();
 
-	public slots:
+        void on_actionExit_triggered();
+
+        void on_actionAbout_triggered();
+
+public slots:
 		void setStatus(QString status);
 
 
 	private:
 		BtScanner *_btScan;
 		Ui::MainWindow *ui;
+        About *_about;
 		QString _status;
 
 		CommandHandler *_ch;
