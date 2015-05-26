@@ -70,32 +70,21 @@ void* MapDiscoverer::SpheroThread(void* init){
 
 	bool collision = false;
 
-	sphero->onCollision([&sphero, &collision](CollisionStruct*){
+	sphero->onCollision([&sphero](CollisionStruct*){
 				sphero->roll(0,0);
 				sphero->setColor(0xff, 0, 0);
-				collision = true;
 				//_world_map->addPoint(coord_t(cs->impact_component_x, cs->impact_component_y));
 			});
 
-	sphero->enableCollisionDetection(80, 20, 80, 20, 80);
+	sphero->enableCollisionDetection(60, 20, 60, 20, 60);
+
+	sphero->roll(60, 270);
+	usleep(200000);
 
 	sphero->setColor(0, 0xff, 0);
 
-	while(!collision)
-	{
-		sphero->roll(60, 180);
-		usleep(200000);
-	}
-	usleep(500000);
-	sphero->setColor(0, 0xff, 0);
-
-	collision = false;
-	while(!collision)
-	{
-		sphero->roll(60, 270);
-		usleep(200000);
-	}
-
+	sphero->roll(60, 180);
+	usleep(200000);
 	sphero->setColor(0, 0xff, 0);
 
 	for(;;)

@@ -268,7 +268,7 @@ void MainWindow::customContextMenuRequested(const QPoint &pos)
 		_mapDisc->addSphero(sph);
 		/*sph->enableCollisionDetection(80, 20, 80, 20, 80);
 		sph->onCollision([this, sph](CollisionStruct* cs){
-			/*sphero->roll(0,0);
+			sphero->roll(0,0);
 			sphero->setColor(0xff, 0, 0);
 			collision = true;
 			_map->addPoint(coord_t(sph->getX(), sph->getY()));
