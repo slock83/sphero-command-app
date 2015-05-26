@@ -8,6 +8,7 @@
 #include <sphero/Sphero.hpp>
 #include <unistd.h>
 #include <QDebug>
+#include <cmath>
 
 //--------------------------------------------------------- Local includes
 #include "MapDiscoverer.hpp"
@@ -217,14 +218,14 @@ void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
     do
     {
 
-        coord_t dest = getLimitPoint(_origine, angle);
+        coord_t dest = _disc->_world_map->getLimitPoint(_origine, angle);
         sphero->rollToPosition(dest.x, dest.y);
-        if(sphero->getCollision() && (ABS(sphero->getX() - dest.x) < 10) && (ABS(sphero->getY() - dest.y) < 10))
+        if(sphero->getCollision() && (abs(sphero->getX() - dest.x) < 10) && (abs(sphero->getY() - dest.y) < 10))
         {
             _disc->_world_map->addOutlinePolygonPoint(coord_t(sphero->getX(), sphero->getY()));
             if(_orient == orientation::HORAIRE)
-            MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::TRIGO, _disc);
-            else MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::HORAIRE, _disc);
+            MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::TRIGO, _sens, _disc);
+            else MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::HORAIRE, _sens, _disc);
         }
     }while(true);
 
