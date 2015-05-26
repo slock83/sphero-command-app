@@ -20,8 +20,8 @@ class MapViewer : public QWidget
 		void setMap(WorldMap* map);
 
 	private:
-		Ui::MapViewer *ui;
 		WorldMap* _map;
+		Ui::MapViewer *ui;
 
 
 		void paintEvent(QPaintEvent *event);
