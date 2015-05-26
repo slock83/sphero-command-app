@@ -29,15 +29,8 @@ void MapViewer::setMap(WorldMap *map)
 
 void MapViewer::paintEvent(QPaintEvent *event)
 {
-
-	//QPainter painter(this);
-	/*QColor color(255, 255, 255);
-	painter.setBrush(color);
-
-
-
 	if(map == NULL)
-		return;*/
+		return;
 	int xmin(0), ymin(0), xmax(0), ymax(0);
 	for(pair<coord_t, point_struct_t*> c : _map->getMap())
 	{
@@ -65,9 +58,15 @@ void MapViewer::paintEvent(QPaintEvent *event)
 
 	painter.setBrush(c);
 
-	for(pair<coord_t, point_struct_t*> c : _map->getMap())
+	for(list<coord_t> coordList: _map->getPolygons())
 	{
-		coord_t coord = c.first;
-		painter.drawPoint(coord.x, coord.y);
+		int len = coordList.size();
+		QPoint points[len];
+		for(int i = 0 ;i < len; ++i)
+		{
+			coord_t c = coordList[i];
+			points[i] = QPoint(c.x, c.y);
+		}
+		painter.drawConvexPolygon(points, len);
 	}
 }

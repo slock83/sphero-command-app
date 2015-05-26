@@ -43,6 +43,8 @@ class WorldMap
 
 		outlines_map_t getOutline();
 
+		polygons_set_t getPolygons();
+
 
 		//------------------------------------------------ Public methods
 

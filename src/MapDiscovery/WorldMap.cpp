@@ -33,6 +33,11 @@ outlines_map_t WorldMap::getOutline()
 	return _outlines_map;
 }
 
+polygons_set_t WorldMap::getPolygons()
+{
+	return _polygons_set;
+}
+
 bool WorldMap::addOutlinePolygonPoint(coord_t const& point)
 {
 	points_map_t::iterator it;
