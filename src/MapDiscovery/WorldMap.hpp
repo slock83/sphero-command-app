@@ -51,11 +51,30 @@ class WorldMap
 		 *        ajouté à un polygone de contour.
 		 *
 		 */
-
 		bool addOutlinePolygonPoint(coord_t const& point);
+
+		/**
+		 * @brief existsOulinePolygonPoint
+		 * @param point
+		 * @return
+		 */
 		bool existsOulinePolygonPoint(coord_t const& point);
 
+		/**
+		 * @brief isOutlinePolygonClosed
+		 * @param point
+		 * @return
+		 */
 		bool isOutlinePolygonClosed(coord_t const& point);
+
+		/**
+		 * @brief getLimitPoint : Renvoie la coordonnée limite à partir du
+		 *		  point selon la direction passée en paramètre
+		 * @param point
+		 * @param direction
+		 * @return
+		 */
+		coord_t getLimitPoint(coord_t const& point, int16_t direction);
 
 		/**
 		 * @brief addPoint : TODO

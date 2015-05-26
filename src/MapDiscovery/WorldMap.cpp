@@ -181,6 +181,73 @@ bool WorldMap::isOutlinePolygonClosed(coord_t const& point)
 	return false;
 }
 
+coord_t WorldMap::getLimitPoint(coord_t const& point, int16_t direction)
+{
+	// On initialise le point limite avec le point de départ
+	coord_t limit_point(point);
+
+	for(polygon_t* polygon : _polygons_set)
+	{
+		for(coord_t coord : *polygon)
+		{
+			switch(direction)
+			{
+				case 0:
+					if(limit_point == point)
+					{
+						// On prend un point qui est dans la bonne direction
+						if(coord.x == limit_point.x && coord.y > limit_point.y)
+							limit_point = coord;
+					}
+					else
+					{
+						if(coord.x == limit_point.x && coord.y > point.y && coord.y < limit_point.y)
+							limit_point = coord;
+					}
+
+					break;
+				case 180:
+					if(limit_point == point)
+					{
+						if(coord.x == limit_point.x && coord.y < limit_point.y)
+							limit_point = coord;
+					}
+					else
+					{
+						if(coord.x == limit_point.x && coord.y < point.y && coord.y > limit_point.y)
+							limit_point = coord;
+					}
+					break;
+				case 270:
+					if(limit_point == point)
+					{
+						if(coord.y == limit_point.y && coord.x < limit_point.x)
+							limit_point = coord;
+					}
+					else
+					{
+						if(coord.y == limit_point.y && coord.x < point.x && coord.x > limit_point.x)
+							limit_point = coord;
+					}
+					break;
+				case 90:
+					if(limit_point == point)
+					{
+						if(coord.y == limit_point.y && coord.x > limit_point.x)
+							limit_point = coord;
+					}
+					else
+					{
+						if(coord.y == limit_point.y && coord.x > point.x && coord.x < limit_point.x)
+							limit_point = coord;
+					}
+					break;
+			}
+		}
+	}
+
+	return limit_point;
+}
 
 point_struct_t* WorldMap::addPoint(coord_t const& point)
 {
