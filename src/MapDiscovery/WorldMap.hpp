@@ -33,7 +33,7 @@ class WorldMap
 
 		//--------------------------------------- Constructors/Destructor
 
-		WorldMap();
+        WorldMap(uint16_t resolution);
 
 		WorldMap(const WorldMap&) = delete;
 
@@ -104,6 +104,8 @@ class WorldMap
 
 		// Contient la liste des polygones
 		polygons_set_t _polygons_set;
+
+        uint16_t _resolution;
 };
 
 #endif // WORLDMAP_HPP

@@ -32,8 +32,8 @@ struct point_struct_t
 	
 	point_struct_t();
 	
-	bool isNeighbour(point_struct_t const& point);
-	bool isNeighbour(coord_t const& point);
+    bool isNeighbour(point_struct_t const& point, uint16_t resolution = 1);
+    bool isNeighbour(coord_t const& point, uint16_t resolution = 1);
 };
 
 #endif // POINTSTRUCT_HPP

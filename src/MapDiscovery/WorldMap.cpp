@@ -11,7 +11,7 @@
 
 //------------------------------------------------ Constructors/Destructor
 
-WorldMap::WorldMap()
+WorldMap::WorldMap(uint16_t resolution) : _resolution(resolution)
 {
 
 }

@@ -16,7 +16,7 @@
 
 //------------------------------------------------ Constructors/Destructor
 
-uint16_t MapDiscoverer::_resolution = 10;
+uint16_t MapDiscoverer::_resolution = 60;
 
 struct initializer{
 		MapDiscoverer* disc;
@@ -27,7 +27,7 @@ struct initializer{
 MapDiscoverer::MapDiscoverer(WorldMap *map) : _world_map(map)
 {
 	pthread_mutex_init(&_mutexActions, NULL);
-    _actionList.push_back(new OutlineExplore(coord_t(0,0),orientation::TRIGO, direction_t::WEST, this));
+    _actionList.push_back(new OutlineExplore(coord_t(0,0),orientation::TRIGO, direction_t::NORTH, this));
 }
 
 MapDiscoverer::~MapDiscoverer()
@@ -78,7 +78,7 @@ void* MapDiscoverer::SpheroThread(void* init){
 				//_world_map->addPoint(coord_t(cs->impact_component_x, cs->impact_component_y));
 			});
 
-	sphero->enableCollisionDetection(60, 20, 60, 20, 60);
+    sphero->enableCollisionDetection(40, 10, 40, 10, 45);
 
 	sphero->roll(60, 270);
 	usleep(2000000);
@@ -88,6 +88,13 @@ void* MapDiscoverer::SpheroThread(void* init){
 	sphero->roll(60, 180);
 	usleep(2000000);
 	sphero->setColor(0, 0xff, 0);
+
+    // On s'éloigne un peu du mur
+    sphero->rollToPosition(sphero->getX() + 15, sphero->getY());
+    usleep(200000);
+    sphero->rollToPosition(sphero->getX() + 15, sphero->getY());
+
+    sleep(1);
 
 	for(;;)
 	{
@@ -116,8 +123,9 @@ MapDiscoverer::OutlineExplore::OutlineExplore(coord_t base, orientation orient,
 
 void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 {
-
+    bool collision;
 	int16_t lastX, lastY;
+    int16_t newX, newY;
 	int16_t direction = 0;
 
 	switch(_approche)
@@ -136,34 +144,67 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 			break;
 	}
 
+    qDebug() << "--- Détectons les contours Diégo ! ---";
+
+    newX = _origine.x;
+    newY = _origine.y;
+
 	for(;;)
 	{
-		lastX = sphero->getX();
-		lastY = sphero->getY();
+        lastX = newX;
+        lastY = newY;
 
 		switch (direction)
 		{
 			case 0:
-				sphero->rollToPosition(lastX, lastY+5);
+                newX = lastX;
+                newY = lastY + _resolution;
 				break;
 			case 180:
-				sphero->rollToPosition(lastX, lastY-5);
+                newX = lastX;
+                newY = lastY - _resolution;
 				break;
 			case 90:
-				sphero->rollToPosition(lastX+5, lastY);
+                newX = lastX + _resolution;
+                newY = lastY;
 				break;
 			case 270:
-				sphero->rollToPosition(lastX-5, lastY);
+                newX = lastX - _resolution;
+                newY = lastY;
 				break;
 		}
 
-		if(sphero->getCollision())
+        qDebug() << "go to " << newX << " " << newY;
+
+        sphero->rollToPosition(newX, newY);
+
+        collision = sphero->getCollision();
+        usleep(200000);
+
+
+        if(!collision)
+        {
+            sphero->rollToPosition(newX, newY);
+            //collision = sphero->getCollision();
+        }
+
+        usleep(200000);
+
+        if(collision)
 		{
+            qDebug() << " -> Point de collision trouvé";
+
+            qDebug() << "go to " << lastX << " " << lastY;
+
 			// On revient à la position initiale
 			sphero->rollToPosition(lastX, lastY);
 
+            usleep(200000);
+            sphero->rollToPosition(lastX, lastY);
+
 			if(!_disc->_world_map->addOutlinePolygonPoint(coord_t(lastX, lastY)))
 			{
+                qDebug() << "J'ai fini Diégo !";
 				// On est retombé sur un point déjà visité
 				return;
 			}
@@ -174,18 +215,25 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 
 			direction = (_orientation == orientation::HORAIRE) ?
 						(direction + 270) % 360 : (direction + 90) % 360;
+
+            newX = lastX;
+            newY = lastY;
 		}
 		else
 		{
+            qDebug() << "Point de non collision";
 			direction = (_orientation == orientation::HORAIRE) ?
 						(direction + 90) % 360 : (direction + 270) % 360;
+
+            if(_disc->_world_map->existsOulinePolygonPoint(coord_t(newX, newY)))
+            {
+                // On est aussi retombé sur un point déjà visité
+                qDebug() << "J'ai fini Vera";
+                return;
+            }
 		}
 
-		if(_disc->_world_map->existsOulinePolygonPoint(coord_t(lastX, lastY)))
-		{
-			// On est aussi retombé sur un point déjà visité
-			return;
-		}
+
 	}
 
 }

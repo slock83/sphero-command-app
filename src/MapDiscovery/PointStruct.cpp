@@ -17,17 +17,17 @@ point_struct_t::point_struct_t()
 {
 }
 
-bool point_struct_t::isNeighbour(point_struct_t const& point)
+bool point_struct_t::isNeighbour(point_struct_t const& point, uint16_t resolution)
 {
-	return isNeighbour(coord_t(point.x, point.y));
+    return isNeighbour(coord_t(point.x, point.y), resolution);
 }
 
-bool point_struct_t::isNeighbour(coord_t const& point)
+bool point_struct_t::isNeighbour(coord_t const& point, uint16_t resolution)
 {
 	if(x == point.x)
 	{
-		if(y == (point.y - 1) 
-			|| y == (point.y + 1))
+        if(y == (point.y - resolution)
+            || y == (point.y + resolution))
 			return true;
 			
 		return false;
@@ -35,8 +35,8 @@ bool point_struct_t::isNeighbour(coord_t const& point)
 	
 	if(y == point.y)
 	{
-		if(x == (point.x - 1) 
-			|| x == (point.x + 1))
+        if(x == (point.x - resolution)
+            || x == (point.x + resolution))
 			return true;
 	}
 	
