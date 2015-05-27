@@ -27,7 +27,7 @@ struct initializer{
 MapDiscoverer::MapDiscoverer(WorldMap *map) : _world_map(map)
 {
 	pthread_mutex_init(&_mutexActions, NULL);
-    _actionList.push_back(new OutlineExplore(coord_t(0,0),orientation::TRIGO, direction_t::NORTH, this));
+	_actionList.push_back(new OutlineExplore(coord_t(0,0),orientation::TRIGO, direction_t::NORTH, this));
 }
 
 MapDiscoverer::~MapDiscoverer()
@@ -78,7 +78,7 @@ void* MapDiscoverer::SpheroThread(void* init){
 				//_world_map->addPoint(coord_t(cs->impact_component_x, cs->impact_component_y));
 			});
 
-    sphero->enableCollisionDetection(40, 10, 40, 10, 45);
+	sphero->enableCollisionDetection(50, 5, 50, 5, 50);
 
 	sphero->roll(60, 270);
 	usleep(2000000);
@@ -89,15 +89,17 @@ void* MapDiscoverer::SpheroThread(void* init){
 	usleep(2000000);
 	sphero->setColor(0, 0xff, 0);
 
-    // On s'éloigne un peu du mur
-    int16_t x, y;
-    x = sphero->getX() + 30;
-    y = sphero->getY();
-    sphero->rollToPosition(x, y);
-    usleep(200000);
-    sphero->rollToPosition(x, y);
+	usleep(500000);
 
-    sleep(1);
+	// On s'éloigne un peu du mur
+	int16_t x, y;
+	x = sphero->getX() + 30;
+	y = sphero->getY();
+	sphero->rollToPosition(x, y);
+	usleep(200000);
+	sphero->rollToPosition(x, y);
+
+	sleep(1);
 
 	for(;;)
 	{
@@ -126,9 +128,10 @@ MapDiscoverer::OutlineExplore::OutlineExplore(coord_t base, orientation orient,
 
 void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 {
-    bool collision;
+	bool collision;
 	int16_t lastX, lastY;
-    int16_t newX, newY;
+	int16_t lastCollisionX, lastCollisionY;
+	int16_t newX, newY;
 	int16_t direction = 0;
 
 	switch(_approche)
@@ -147,70 +150,75 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 			break;
 	}
 
-    qDebug() << "--- Détectons les contours Diégo ! ---";
+	qDebug() << "--- Détectons les contours Diégo ! ---";
 
-    newX = _origine.x;
-    newY = _origine.y;
+	newX = _origine.x;
+	newY = _origine.y;
+
+	lastCollisionX = newX;
+	lastCollisionY = newY;
 
 	for(;;)
 	{
-        lastX = newX;
-        lastY = newY;
+		lastX = newX;
+		lastY = newY;
 
 		switch (direction)
 		{
 			case 0:
-                newX = lastX;
-                newY = lastY + _resolution;
+				newX = lastX;
+				newY = lastY + _resolution;
 				break;
 			case 180:
-                newX = lastX;
-                newY = lastY - _resolution;
+				newX = lastX;
+				newY = lastY - _resolution;
 				break;
 			case 90:
-                newX = lastX + _resolution;
-                newY = lastY;
+				newX = lastX + _resolution;
+				newY = lastY;
 				break;
 			case 270:
-                newX = lastX - _resolution;
-                newY = lastY;
+				newX = lastX - _resolution;
+				newY = lastY;
 				break;
 		}
 
-        qDebug() << "go to " << newX << " " << newY;
+		qDebug() << "go to " << newX << " " << newY;
 
-        sphero->rollToPosition(newX, newY);
+		sphero->rollToPosition(newX, newY);
 
-        collision = sphero->getCollision();
-        usleep(200000);
+		collision = sphero->getCollision();
+		usleep(200000);
 
-
-        if(!collision)
-        {
-            sphero->rollToPosition(newX, newY);
-            //collision = sphero->getCollision();
-        }
-
-        usleep(200000);
-
-        if(collision)
+		if(!collision)
 		{
-            // Sphero en orange
-            sphero->setColor(255, 128, 128);
+			sphero->rollToPosition(newX, newY);
+			//collision = sphero->getCollision();
+		}
 
-            qDebug() << " -> Point de collision trouvé";
+		usleep(200000);
 
-            qDebug() << "go to " << lastX << " " << lastY;
+		if(collision)
+		{
+			lastCollisionX = lastX;
+			lastCollisionY = lastY;
+
+			// Sphero en orange
+			sphero->setColor(255, 128, 128);
+
+			qDebug() << " -> Point de collision trouvé";
+
+			qDebug() << "go to " << lastX << " " << lastY;
 
 			// On revient à la position initiale
 			sphero->rollToPosition(lastX, lastY);
 
-            usleep(200000);
-            sphero->rollToPosition(lastX, lastY);
+			usleep(200000);
+			sphero->rollToPosition(lastX, lastY);
 
 			if(!_disc->_world_map->addOutlinePolygonPoint(coord_t(lastX, lastY)))
 			{
-                qDebug() << "J'ai fini Diégo !";
+				qDebug() << "J'ai fini Diégo !";
 				// On est retombé sur un point déjà visité
 				return;
 			}
@@ -222,24 +230,25 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 			direction = (_orientation == orientation::HORAIRE) ?
 						(direction + 270) % 360 : (direction + 90) % 360;
 
-            // sphero en vert
-            sphero->setColor(0, 255, 0);
+			// sphero en vert
+			sphero->setColor(0, 255, 0);
 
-            newX = lastX;
-            newY = lastY;
+			newX = lastX;
+			newY = lastY;
 		}
 		else
 		{
-            qDebug() << "Point de non collision";
+			qDebug() << "Point de non collision";
 			direction = (_orientation == orientation::HORAIRE) ?
 						(direction + 90) % 360 : (direction + 270) % 360;
 
-            if(_disc->_world_map->existsOulinePolygonPoint(coord_t(newX, newY)))
-            {
-                // On est aussi retombé sur un point déjà visité
-                qDebug() << "J'ai fini Vera";
-                return;
-            }
+			if(_disc->_world_map->existsOulinePolygonPoint(coord_t(newX, newY))
+					&& (newX != lastCollisionX) || (newY != lastCollisionY))
+			{
+				// On est aussi retombé sur un point déjà visité
+				qDebug() << "J'ai fini Vera";
+				return;
+			}
 		}
 
 
@@ -254,36 +263,36 @@ MapDiscoverer::ExploreLine::ExploreLine(coord_t base,orientation orient, directi
 void MapDiscoverer::ExploreLine::effectuer(Sphero *sphero)
 {
 
-    int angle;
+	int angle;
 	switch (_sens)
 	{
 		case NORTH:
-            angle = 0;
+			angle = 0;
 			break;
 		case SOUTH:
-            angle = 180;
+			angle = 180;
 			break;
 		case EAST:
-            angle = 90;
+			angle = 90;
 			break;
 		case WEST:
-            angle = 270;
+			angle = 270;
 			break;
 	}
 
-    do
-    {
+	do
+	{
 
-        coord_t dest = _disc->_world_map->getLimitPoint(_origine, angle);
-        sphero->rollToPosition(dest.x, dest.y);
-        if(sphero->getCollision() && (abs(sphero->getX() - dest.x) < 10) && (abs(sphero->getY() - dest.y) < 10))
-        {
-            _disc->_world_map->addOutlinePolygonPoint(coord_t(sphero->getX(), sphero->getY()));
-            if(_orient == orientation::HORAIRE)
-            MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::TRIGO, _sens, _disc);
-            else MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::HORAIRE, _sens, _disc);
-        }
-    }while(true);
+		coord_t dest = _disc->_world_map->getLimitPoint(_origine, angle);
+		sphero->rollToPosition(dest.x, dest.y);
+		if(sphero->getCollision() && (abs(sphero->getX() - dest.x) < 10) && (abs(sphero->getY() - dest.y) < 10))
+		{
+			_disc->_world_map->addOutlinePolygonPoint(coord_t(sphero->getX(), sphero->getY()));
+			if(_orient == orientation::HORAIRE)
+			MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::TRIGO, _sens, _disc);
+			else MapDiscoverer::OutlineExplore(coord_t(sphero->getX(), sphero->getY()), orientation::HORAIRE, _sens, _disc);
+		}
+	}while(true);
 
 
 	sphero->roll(0, 0);
