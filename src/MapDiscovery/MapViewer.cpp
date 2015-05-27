@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <map>
+#include <QDebug>
 
 using namespace std;
 
@@ -55,14 +56,33 @@ void MapViewer::paintEvent(QPaintEvent *event)
 	qDebug() << "Ymax " << ymax;
 
 	QPainter painter(this);
+	painter.setPen(Qt::blue);
+	painter.setFont(QFont("Arial", 30));
 	painter.translate(-xmin, -ymin);
 
-	if(xmax != xmin && ymax != ymin)
-		painter.scale(width()/(1.0*(xmax-xmin)), height()/(1.0*(ymax-ymin)));
+	/*if(xmax != xmin && ymax != ymin)
+		painter.scale(width(), height());
+	else
+		painter.scale(width()/480, height()/480);*/
 
 	QColor c(0, 0, 0);
 
 	painter.setBrush(c);
+
+	/*QPoint points[5];
+	points[0] = QPoint(0, 480);
+	points[1] = QPoint(0, 300);
+	points[2] = QPoint(0, 360);
+	points[3] = QPoint(0, 120);
+	points[4] = QPoint(0, 540);
+
+	painter.drawPolygon(points, 5);
+	painter.setPen(QPen(Qt::black, 3));
+	painter.drawPoint(QPoint(0, 480));
+	painter.drawPoint(QPoint(10, 480));
+	painter.drawPoint(QPoint(10, 50));
+
+	painter.setBrush(c);*/
 
 	for(list<coord_t> *coordList: _map->getPolygons())
 	{
