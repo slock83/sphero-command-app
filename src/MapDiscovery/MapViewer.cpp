@@ -63,6 +63,11 @@ void MapViewer::paintEvent(QPaintEvent *event)
 	painter.setFont(QFont("Arial", 30));
 	painter.translate(-xmin, -ymin);
 
+    if(xmin > 0)
+        xmin = 0;
+
+    if(ymin > 0)
+        ymin = 0;
 	/*if(xmax != xmin && ymax != ymin)
 		painter.scale(width(), height());
 	else
@@ -95,8 +100,8 @@ void MapViewer::paintEvent(QPaintEvent *event)
 		int i = 0;
 		for(coord_t c : *coordList)
 		{
-			qDebug() << c.x << " " << c.y;
-			points[i] = QPoint(c.x, c.y);
+            qDebug() << (int16_t)c.x-xmin << " " << (int16_t)c.y-ymin;
+            points[i] = QPoint((int16_t)c.x-xmin, (int16_t)c.y-ymin);
 			++i;
 		}
 		painter.drawConvexPolygon(points, len);

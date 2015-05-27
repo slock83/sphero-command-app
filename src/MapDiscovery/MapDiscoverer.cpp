@@ -90,9 +90,12 @@ void* MapDiscoverer::SpheroThread(void* init){
 	sphero->setColor(0, 0xff, 0);
 
     // On s'éloigne un peu du mur
-    sphero->rollToPosition(sphero->getX() + 15, sphero->getY());
+    int16_t x, y;
+    x = sphero->getX() + 30;
+    y = sphero->getY();
+    sphero->rollToPosition(x, y);
     usleep(200000);
-    sphero->rollToPosition(sphero->getX() + 15, sphero->getY());
+    sphero->rollToPosition(x, y);
 
     sleep(1);
 
@@ -192,6 +195,9 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 
         if(collision)
 		{
+            // Sphero en orange
+            sphero->setColor(255, 128, 128);
+
             qDebug() << " -> Point de collision trouvé";
 
             qDebug() << "go to " << lastX << " " << lastY;
@@ -215,6 +221,9 @@ void MapDiscoverer::OutlineExplore::effectuer(Sphero* sphero)
 
 			direction = (_orientation == orientation::HORAIRE) ?
 						(direction + 270) % 360 : (direction + 90) % 360;
+
+            // sphero en vert
+            sphero->setColor(0, 255, 0);
 
             newX = lastX;
             newY = lastY;
