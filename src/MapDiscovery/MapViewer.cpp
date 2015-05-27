@@ -29,11 +29,12 @@ void MapViewer::setMap(WorldMap *map)
 
 void MapViewer::paintEvent(QPaintEvent *event)
 {
-    if(_map == NULL)
+	if(_map == NULL)
 		return;
 	int xmin(0), ymin(0), xmax(0), ymax(0);
 	for(pair<coord_t, point_struct_t*> c : _map->getMap())
 	{
+		qDebug() << "Pass here";
 		coord_t coord = c.first;
 
 		if(coord.x < xmin)
@@ -48,6 +49,11 @@ void MapViewer::paintEvent(QPaintEvent *event)
 			ymax = coord.y;
 	}
 
+	qDebug() << "Xmin " << xmin;
+	qDebug() << "Ymin " << ymin;
+	qDebug() << "Xmax " << xmax;
+	qDebug() << "Ymax " << ymax;
+
 	QPainter painter(this);
 	painter.translate(-xmin, -ymin);
 
@@ -58,16 +64,17 @@ void MapViewer::paintEvent(QPaintEvent *event)
 
 	painter.setBrush(c);
 
-    for(list<coord_t> *coordList: _map->getPolygons())
+	for(list<coord_t> *coordList: _map->getPolygons())
 	{
-        int len = coordList->size();
+		int len = coordList->size();
 		QPoint points[len];
-        int i = 0;
-        for(coord_t c : *coordList)
-        {
-            points[i] = QPoint(c.x, c.y);
-            ++i;
-        }
+		int i = 0;
+		for(coord_t c : *coordList)
+		{
+			qDebug() << c.x << " " << c.y;
+			points[i] = QPoint(c.x, c.y);
+			++i;
+		}
 		painter.drawConvexPolygon(points, len);
 	}
 }
