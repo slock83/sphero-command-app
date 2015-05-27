@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	_joystickList = new QMenu("Connect joystick");
 
-	_map = new WorldMap();
+    _map = new WorldMap(60);
 	_mapDisc = new MapDiscoverer(_map);
 
 	ui->map->setMap(_map);
