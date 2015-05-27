@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QTimer>
+#include <QDebug>
 #include <map>
 #include <QDebug>
 
@@ -30,8 +31,10 @@ void MapViewer::setMap(WorldMap *map)
 
 void MapViewer::paintEvent(QPaintEvent *event)
 {
+	qDebug() << "Test1";
 	if(_map == NULL)
 		return;
+	qDebug() << "Test2";
 	int xmin(0), ymin(0), xmax(0), ymax(0);
 	for(pair<coord_t, point_struct_t*> c : _map->getMap())
 	{
@@ -64,6 +67,7 @@ void MapViewer::paintEvent(QPaintEvent *event)
 		painter.scale(width(), height());
 	else
 		painter.scale(width()/480, height()/480);*/
+
 
 	QColor c(0, 0, 0);
 

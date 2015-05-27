@@ -11,7 +11,7 @@
 
 //------------------------------------------------ Constructors/Destructor
 
-WorldMap::WorldMap()
+WorldMap::WorldMap(uint16_t resolution) : _resolution(resolution)
 {
 
 }
@@ -55,9 +55,11 @@ bool WorldMap::addOutlinePolygonPoint(coord_t const& point)
 	// On recherche si le point en question est voisin d'une tête
 	// ou d'une queue de polygone déjà existant
 
+    isFront1 = isFront2 = false;
+
 	for(polygon_t* polygon : _polygons_set)
 	{
-		if(point_struct->isNeighbour(polygon->front()))
+        if(point_struct->isNeighbour(polygon->front(), _resolution))
 		{
 			// Le point est voisin de la tête d'un polygone
 			if(polygon1 == nullptr)
@@ -74,7 +76,7 @@ bool WorldMap::addOutlinePolygonPoint(coord_t const& point)
 			}
 		}
 
-		if(polygon->size() != 1 && point_struct->isNeighbour(polygon->back()))
+        if(polygon->size() != 1 && point_struct->isNeighbour(polygon->back(), _resolution))
 		{
 			// Le point est voisin de la queue d'un polygone
 			if(polygon1 == nullptr)
